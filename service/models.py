@@ -14,8 +14,7 @@ first_name (string) - the first name of the customer
 last_name (string) - the last name of the customer
 user_id (string) - User ID of the customer, unique, chosen by the customer at the time of registration
 password (string) - Password of the customer, used for logging in
-primary_address(string) - primary address of the customer
-addresses (List(string)) - contains at least one address for every customer
+address_id(int) - id of the customer's primary address
 """
 
 import logging
