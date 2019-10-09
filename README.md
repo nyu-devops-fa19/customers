@@ -1,2 +1,1 @@
-# customers
-The customers resource is a representation of the customer accounts of the eCommerce site.
+customer squads of a e-commerce website
