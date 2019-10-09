@@ -107,18 +107,14 @@ def index():
 # ######################################################################
 # # LIST ALL CUSTOMERS
 # ######################################################################
+# @app.route('/customers', methods=['GET'])
+# def list_customers():
+#     """ Returns all of the Pets """
+#     app.logger.info('Request for pet list')
+#     customers = Customer.all()
 
-
-@app.route('/customers', methods=['GET'])
-def list_customers():
-    """ Returns all of the Pets """
-    app.logger.info('Request for pet list')
-    customers = Customer.all()
-
-    results = [cust.serialize() for cust in customers]
-    return make_response(jsonify(results), status.HTTP_200_OK)
-
-
+#     results = [cust.serialize() for cust in customers]
+#     return make_response(jsonify(results), status.HTTP_200_OK)
 # ######################################################################
 # # RETRIEVE A PET
 # ######################################################################
@@ -139,36 +135,31 @@ def list_customers():
 # ######################################################################
 # # ADD A NEW PET
 # ######################################################################
+# @app.route('/customers', methods=['POST'])
+# def create_customers():
+#     """
+#     Creates a Customer
+#     This endpoint will create a Customer based the data in the body that is posted
+#     """
+#     app.logger.info('Request to create a customer')
+#     check_content_type('application/json')
+#     data = request.get_json()
 
+#     cust = Customer()
+#     cust.deserialize(data)
+#     cust.save()
+#     customer_id = cust.customer_id
+#     addr = Address()
+#     addr.deserialize(data['address'])
+#     addr.customer_id = customer_id
+#     addr.save()
 
-@app.route('/customers', methods=['POST'])
-def create_customers():
-    """
-    Creates a Customer
-    This endpoint will create a Customer based the data in the body that is posted
-    """
-    app.logger.info('Request to create a customer')
-    check_content_type('application/json')
-    data = request.get_json()
-
-    addr = Address()
-    addr.deserialize(data['address'])
-    addr.save()
-    address_id = addr.id
-    cust = Customer()
-    cust.deserialize(data)
-    cust.address_id = address_id
-    cust.save()
-    addr.customer_id = cust.customer_id
-    
-    message = cust.serialize()
-    location_url = url_for('create_customers', customer_id=cust.customer_id, _external=True)
-    return make_response(jsonify(message), status.HTTP_201_CREATED,
-                         {
-                             'Location': location_url
-                         })
-
-
+#     message = cust.serialize()
+#     location_url = url_for('create_customers', customer_id=cust.customer_id, _external=True)
+#     return make_response(jsonify(message), status.HTTP_201_CREATED,
+#                          {
+#                              'Location': location_url
+#                          })
 # ######################################################################
 # # UPDATE AN EXISTING PET
 # ######################################################################

@@ -36,14 +36,13 @@ class Address(db.Model):
     logger = logging.getLogger('flask.app')
     app = None
 
-    __tablename__ = 'address'
     id = db.Column(db.Integer, primary_key=True)
     street = db.Column(db.String)
     apartment = db.Column(db.String)
     city = db.Column(db.String)
     state = db.Column(db.String)
     zip_code = db.Column(db.String)
-    customer_id = db.Column(db.Integer, nullable=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=True)
 
     def serialize(self):
         """ Serializes an Address into a dictionary """
@@ -98,6 +97,7 @@ class Customer(db.Model):
     """
     Class that represents a Customer
     """
+    __tablename__ = 'customer'
     logger = logging.getLogger('flask.app')
     app = None
 
@@ -107,7 +107,7 @@ class Customer(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
-    address_id = db.Column(db.Integer, db.ForeignKey('address.id'), nullable=False)
+    address_id = db.Column(db.Integer, nullable=True)
 
     __table_args__ = (
         CheckConstraint('char_length(password) > 5',
@@ -156,6 +156,9 @@ class Customer(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
+    '''
+    TODO: Add methods for save, delete, list and query operations here
+
     def save(self):
         """
         Saves a Customer to the data store
@@ -170,9 +173,6 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
-
-    '''
-    TODO: Add methods for save, delete, list and query operations here
 
     def delete(self):
         """ Removes a Pet from the data store """
