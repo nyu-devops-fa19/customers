@@ -106,6 +106,7 @@ class Customer(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     user_id = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
     address_id = db.Column(db.Integer, nullable=True)
 
     __table_args__ = (
@@ -124,7 +125,8 @@ class Customer(db.Model):
         return {"id": self.customer_id,
                 "first name": self.first_name,
                 "last name": self.last_name,
-                "user id": self.user_id}
+                "user id": self.user_id,
+                "active": self.active}
 
     def deserialize(self, data):
         """
@@ -138,6 +140,7 @@ class Customer(db.Model):
             self.last_name = data['last_name']
             self.user_id = data['user_id']
             self.password = data['password']
+            self.active = True
         except KeyError as error:
             raise DataValidationError('Invalid pet: missing ' + error.args[0])
         except TypeError as error:
@@ -155,9 +158,6 @@ class Customer(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tables
 
-    '''
-    TODO: Add methods for save, delete, list and query operations here
-
     def save(self):
         """
         Saves a Customer to the data store
@@ -172,6 +172,8 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
+    '''
+    TODO: Add methods for save, delete, list and query operations here
 
     def delete(self):
         """ Removes a Pet from the data store """
