@@ -182,12 +182,6 @@ class Customer(db.Model):
     '''
     TODO: Add methods for save, delete, list and query operations here
 
-    def delete(self):
-        """ Removes a Pet from the data store """
-        Pet.logger.info('Deleting %s', self.name)
-        db.session.delete(self)
-        db.session.commit()
-
     @classmethod
     def find(cls, pet_id):
         """ Finds a Pet by it's ID """
