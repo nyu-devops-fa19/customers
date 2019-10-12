@@ -184,18 +184,19 @@ def create_customers():
 # ######################################################################
 # # DELETE A PET
 # ######################################################################
-# @app.route('/pets/<int:pet_id>', methods=['DELETE'])
-# def delete_pets(pet_id):
-#     """
-#     Delete a Pet
-# 
-#     This endpoint will delete a Pet based the id specified in the path
-#     """
-#     app.logger.info('Request to delete pet with id: %s', pet_id)
-#     pet = Pet.find(pet_id)
-#     if pet:
-#         pet.delete()
-#     return make_response('', status.HTTP_204_NO_CONTENT)
+ @app.route('/pets/<int:pet_id>', methods=['DELETE'])
+def delete_customers(customer_id):
+
+    """
+    Delete a Pet
+ 
+    This endpoint will delete a Pet based the id specified in the path
+     """
+    app.logger.info('Request to delete customer with id: %s', customer_id)
+    customer = Customer.find(customer_id)
+    if customer:
+        customer.delete()
+    return make_response('', status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

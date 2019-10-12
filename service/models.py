@@ -172,6 +172,13 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
+    
+    def delete(self):
+        """ Removes a Customer from the data store """
+        Customers.logger.info('Deleting %s %s', self.first_name, self.last_name)
+        db.session.delete(self)
+        db.session.commit()
+
     '''
     TODO: Add methods for save, delete, list and query operations here
 
