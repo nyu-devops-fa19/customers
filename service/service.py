@@ -33,7 +33,7 @@ from werkzeug.exceptions import NotFound
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Customer, DataValidationError
+from service.models import Customer, DataValidationError, Address
 
 # Import Flask application
 from . import app
@@ -105,26 +105,16 @@ def index():
 
 # TODO: Modify below according to RESTful APIs of customers
 # ######################################################################
-# # LIST ALL PETS
+# # LIST ALL CUSTOMERS
 # ######################################################################
-# @app.route('/pets', methods=['GET'])
-# def list_pets():
-#     """ Returns all of the Pets """
-#     app.logger.info('Request for pet list')
-#     pets = []
-#     category = request.args.get('category')
-#     name = request.args.get('name')
-#     if category:
-#         pets = Pet.find_by_category(category)
-#     elif name:
-#         pets = Pet.find_by_name(name)
-#     else:
-#         pets = Pet.all()
-# 
-#     results = [pet.serialize() for pet in pets]
-#     return make_response(jsonify(results), status.HTTP_200_OK)
-# 
-# 
+@app.route('/customers', methods=['GET'])
+def list_customers():
+    """ Returns all of the Pets """
+    app.logger.info('Request for pet list')
+    customers = Customer.all()
+
+    results = [cust.serialize() for cust in customers]
+    return make_response(jsonify(results), status.HTTP_200_OK)
 # ######################################################################
 # # RETRIEVE A PET
 # ######################################################################
@@ -143,27 +133,33 @@ def index():
 # 
 # 
 # ######################################################################
-# # ADD A NEW PET
+# # ADD A NEW CUSTOMER
 # ######################################################################
-# @app.route('/pets', methods=['POST'])
-# def create_pets():
-#     """
-#     Creates a Pet
-#     This endpoint will create a Pet based the data in the body that is posted
-#     """
-#     app.logger.info('Request to create a pet')
-#     check_content_type('application/json')
-#     pet = Pet()
-#     pet.deserialize(request.get_json())
-#     pet.save()
-#     message = pet.serialize()
-#     location_url = url_for('get_pets', pet_id=pet.id, _external=True)
-#     return make_response(jsonify(message), status.HTTP_201_CREATED,
-#                          {
-#                              'Location': location_url
-#                          })
-# 
-# 
+@app.route('/customers', methods=['POST'])
+def create_customers():
+    """
+    Creates a Customer
+    This endpoint will create a Customer based the data in the body that is posted
+    """
+    app.logger.info('Request to create a customer')
+    check_content_type('application/json')
+    data = request.get_json()
+
+    cust = Customer()
+    cust.deserialize(data)
+    cust.save()
+    customer_id = cust.customer_id
+    addr = Address()
+    addr.deserialize(data['address'])
+    addr.customer_id = customer_id
+    addr.save()
+
+    message = cust.serialize()
+    location_url = url_for('create_customers', customer_id=cust.customer_id, _external=True)
+    return make_response(jsonify(message), status.HTTP_201_CREATED,
+                         {
+                             'Location': location_url
+                         })
 # ######################################################################
 # # UPDATE AN EXISTING PET
 # ######################################################################
@@ -209,6 +205,7 @@ def init_db():
     """ Initialies the SQLAlchemy app """
     global app
     Customer.init_db(app)
+    Address.init_db(app)
 
 def check_content_type(content_type):
     """ Checks that the media type is correct """
