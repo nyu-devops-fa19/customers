@@ -172,6 +172,13 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
+    
+    @classmethod
+    def find(cls, customer_id):
+        """ Finds a Pet by it's ID """
+        cls.logger.info('Processing lookup for id %s ...', customer_id)
+        return cls.query.get(customer_id)
+
     '''
     TODO: Add methods for save, delete, list and query operations here
 

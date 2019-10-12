@@ -163,24 +163,24 @@ def create_customers():
 # ######################################################################
 # # UPDATE AN EXISTING PET
 # ######################################################################
-# @app.route('/pets/<int:pet_id>', methods=['PUT'])
-# def update_pets(pet_id):
-#     """
-#     Update a Pet
-# 
-#     This endpoint will update a Pet based the body that is posted
-#     """
-#     app.logger.info('Request to update pet with id: %s', pet_id)
-#     check_content_type('application/json')
-#     pet = Pet.find(pet_id)
-#     if not pet:
-#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-#     pet.deserialize(request.get_json())
-#     pet.id = pet_id
-#     pet.save()
-#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
-# 
-# 
+@app.route('/customers/<int:customer_id>', methods=['PUT'])
+def update_customers(customer_id):
+    """
+    Update a Customer
+
+    This endpoint will update a Customer based the body that is posted
+    """
+    app.logger.info('Request to update customer with id: %s', customer_id)
+    check_content_type('application/json')
+    customer = Customer.find(customer_id)
+    if not pet:
+        raise NotFound("Customer with id '{}' was not found.".format(customer_id))
+    customer.deserialize(request.get_json())
+    customer.id = customer_id
+    cutomer.save()
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
+
 # ######################################################################
 # # DELETE A PET
 # ######################################################################
