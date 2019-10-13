@@ -61,6 +61,8 @@ class TestCustomerServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    # TODO: Add test methods for save, delete, list and query operations here
+    
     # def _create_pets(self, count):
     #     """ Factory method to create pets in bulk """
     #     pets = []
