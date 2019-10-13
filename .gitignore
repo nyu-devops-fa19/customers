@@ -1,3 +1,6 @@
+# cache folder
+__pycache__/
+
 # log files
 *.log
 
