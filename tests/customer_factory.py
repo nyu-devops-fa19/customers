@@ -19,15 +19,23 @@ import factory
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
 from service.models import Customer
 
+class AddressFactory(factory.Factory):
+    id = factory.Sequence(lambda n: n)
+    street = FuzzyText(8)
+    apartment = 
+    city =
+    state =
+    zip_code =
+    customer_id = factory.Sequence(lambda n: n)
+
+
+
 class CustomerFactory(factory.Factory):
     """ Creates fake customers that you don't have to feed """
     class Meta:
         model = Customer
-    id = factory.Sequence(lambda n: n)
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
-    address = factory.Faker('address')
-    customer_id = FuzzyInteger(1,100) # Assume that the customer_id is from 1 to 100
     user_id = FuzzyText(8) # Assume that the length of user_id is 8
     password = FuzzyText(8) # Assume that the length of password is 8
     active = FuzzyChoice(choices=[True, False])
