@@ -26,7 +26,7 @@ import os
 import logging
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
-from service.models import Customer, DataValidationError, db
+from service.models import Customer, Address, DataValidationError, db
 from .Customer_factory import CustomerFactory
 from service.service import app, init_db, initialize_logging
 
@@ -38,3 +38,24 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost
 ######################################################################
 class TestCustomerServer(unittest.TestCase):
     """ Customer Server Tests """
+    def setUpClass(cls):
+        """ Run once before all tests """
+        app.debug = False
+        initialize_logging(logging.INFO)
+        # Set up the test database
+        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        """ Runs before each test """
+        init_db()
+        db.drop_all()    # clean up the last tests
+        db.create_all()  # create new tables
+        self.app = app.test_client()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()

@@ -23,7 +23,7 @@ Test cases can be run with:
 import unittest
 import os
 from werkzeug.exceptions import NotFound
-from service.models import Customer, DataValidationError, db
+from service.models import Customer, Address, DataValidationError, db
 from service import app
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost:5432/postgres')
@@ -33,3 +33,42 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost
 ######################################################################
 class TestCustomers(unittest.TestCase):
     """ Test Cases for Customers """
+
+    @classmethod
+    def setUpClass(cls):
+        """ These run once per Test suite """
+        app.debug = False
+        # Set up the test database
+        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        Customer.init_db(app)
+        Address.init_db(app)
+        db.drop_all()    # clean up the last tests
+        db.create_all()  # make our sqlalchemy tables
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_create_a_customer(self):
+        """ Create a customer and assert that it exists """
+        # addr = Address (
+        #   	street= "100 W 100 St.",
+		    #     apartment= "100",
+		    #     city= "New York",
+		    #     state= "New York",
+		    #     zip_code= "100",
+        # )
+        cust = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", address_id="100")
+        self.assertTrue(cust != None)
+        self.assertEqual(cust.customer_id, None)
+        self.assertEqual(cust.first_name, "Marry")
+        self.assertEqual(cust.last_name, "Wang")
+        self.assertEqual(cust.user_id, "marrywang")
+        self.assertEqual(cust.password, "password")
+        self.assertEqual(cust.address_id, "100")
