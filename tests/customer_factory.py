@@ -30,7 +30,7 @@ class CustomerFactory(factory.Factory):
     customer_id = FuzzyInteger(1,100) # Assume that the customer_id is from 1 to 100
     user_id = FuzzyText(8) # Assume that the length of user_id is 8
     password = FuzzyText(8) # Assume that the length of password is 8
-    available = FuzzyChoice(choices=[True, False])
+    active = FuzzyChoice(choices=[True, False])
 
 if __name__ == '__main__':
     for _ in range(10):
