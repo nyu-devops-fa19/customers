@@ -180,13 +180,13 @@ class Customer(db.Model):
         Pet.logger.info('Deleting %s', self.name)
         db.session.delete(self)
         db.session.commit()
-
+    '''
     @classmethod
-    def find(cls, pet_id):
+    def find(cls, user_id):
         """ Finds a Pet by it's ID """
-        cls.logger.info('Processing lookup for id %s ...', pet_id)
-        return cls.query.get(pet_id)
-
+        cls.logger.info('Processing lookup for id %s ...', user_id)
+        return cls.query.filter(cls.user_id == user_id)
+    '''
     @classmethod
     def find_or_404(cls, pet_id):
         """ Find a Pet by it's id """
