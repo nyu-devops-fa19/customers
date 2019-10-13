@@ -16,14 +16,14 @@ address - JSON containing:
 	zip_code - String  
 
 2. Read:
-* GET /customers/<id>  
-  <id> is the customer_id
+* GET /customers/id  
+  id is the customer_id
     
 3. Update:
-* PUT /customers/<id>
+* PUT /customers/id
   
 4. Delete:
-* DELETE /customers/<id>
+* DELETE /customers/id
   
 5. List:
 * GET /customers
