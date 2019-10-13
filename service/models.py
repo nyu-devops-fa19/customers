@@ -183,7 +183,7 @@ class Customer(db.Model):
     '''
     @classmethod
     def find(cls, user_id):
-        """ Finds a Pet by it's ID """
+        """ Finds a Customer by it's ID """
         cls.logger.info('Processing lookup for id %s ...', user_id)
         return cls.query.filter(cls.user_id == user_id)
     '''
