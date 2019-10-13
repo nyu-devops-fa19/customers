@@ -16,7 +16,7 @@ address - JSON containing:
 	zip_code - String  
 
 2. Read:
-* GET /customers/<id>
+* GET /customers/<id>  
   <id> is the customer_id
     
 3. Update:
