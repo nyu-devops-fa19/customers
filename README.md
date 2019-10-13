@@ -3,7 +3,7 @@ customer squads of a e-commerce website
 APIs:
 1. Create:
 * POST /customers  
-Body: JSON containing the following fields:
+Body: JSON containing the following fields:  
 first_name - String  
 last_name - String  
 user_id - String  
