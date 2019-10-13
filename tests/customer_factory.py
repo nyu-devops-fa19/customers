@@ -17,15 +17,17 @@ Test Factory to make fake objects for testing
 """
 import factory
 import string
+import random
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
 from service.models import Customer
 
 class AddressFactory(factory.Factory):
     id = factory.Sequence(lambda n: n)
-    street = FuzzyText(8, chars=string.ascii_letters + string.digits)
-    apartment = FuzzyText(8, chars=string.ascii_letters + string.digits)
-    city = FuzzyText(8, chars=string.ascii_letters + string.digits)
-    state = FuzzyText(8, chars=string.ascii_letters + string.digits)
+
+    street = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits)
+    apartment = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits)
+    city = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits)
+    state = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits)
     zip_code = FuzzyText(5, chars=string.digits)
     customer_id = factory.Sequence(lambda n: n)
 
@@ -38,13 +40,12 @@ class CustomerFactory(factory.Factory):
     first_name = factory.Faker('first_name')
     last_name = factory.Faker('last_name')
     Address = AddressFactory()
-    user_id = factory.Sequence(lambda n: n)
-    password = FuzzyText(8, chars=string.ascii_letters + string.digits) # Assume that the length of password is 8
+
+    user_id = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits) # Assume that the length of user_id is 8
+    password = FuzzyText(random.randint(1,20), chars=string.ascii_letters + string.digits) # Assume that the length of password is 8
     active = FuzzyChoice(choices=[True, False])
 
 if __name__ == '__main__':
     for _ in range(10):
         customer = CustomerFactory()
         print(customer.serialize())
-
-
