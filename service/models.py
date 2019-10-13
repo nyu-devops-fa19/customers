@@ -91,6 +91,12 @@ class Address(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tabless
 
+    @classmethod
+    def find(cls, addr_id):
+        """ Finds a Customer by his ID """
+        cls.logger.info('Processing lookup for id %s ...', addr_id)
+        return cls.query.get(addr_id).serialize()
+
 
 class Customer(db.Model):
     """
@@ -126,7 +132,8 @@ class Customer(db.Model):
                 "first name": self.first_name,
                 "last name": self.last_name,
                 "user id": self.user_id,
-                "active": self.active}
+                "active": self.active,
+                "address": Address.find(self.address_id)}
 
     def deserialize(self, data):
         """

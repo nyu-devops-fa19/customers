@@ -153,7 +153,8 @@ def create_customers():
     addr.deserialize(data['address'])
     addr.customer_id = customer_id
     addr.save()
-
+    cust.address_id = addr.id
+    cust.save()
     message = cust.serialize()
     location_url = url_for('create_customers', customer_id=cust.customer_id, _external=True)
     return make_response(jsonify(message), status.HTTP_201_CREATED,
