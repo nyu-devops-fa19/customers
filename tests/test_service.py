@@ -38,28 +38,28 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost
 ######################################################################
 class TestCustomerServer(unittest.TestCase):
     """ Customer Server Tests """
-     @classmethod
-    def setUpClass(cls):
-        """ Run once before all tests """
-        app.debug = False
-        initialize_logging(logging.INFO)
-        # Set up the test database
-        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+    #  @classmethod
+    # def setUpClass(cls):
+    #     """ Run once before all tests """
+    #     app.debug = False
+    #     initialize_logging(logging.INFO)
+    #     # Set up the test database
+    #     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
 
-    @classmethod
-    def tearDownClass(cls):
-        pass
+    # @classmethod
+    # def tearDownClass(cls):
+    #     pass
 
-    def setUp(self):
-        """ Runs before each test """
-        init_db()
-        db.drop_all()    # clean up the last tests
-        db.create_all()  # create new tables
-        self.app = app.test_client()
+    # def setUp(self):
+    #     """ Runs before each test """
+    #     init_db()
+    #     db.drop_all()    # clean up the last tests
+    #     db.create_all()  # create new tables
+    #     self.app = app.test_client()
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+    # def tearDown(self):
+    #     db.session.remove()
+    #     db.drop_all()
 
     # TODO: Add test methods for save, delete, list and query operations here
     
