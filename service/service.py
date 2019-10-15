@@ -185,16 +185,16 @@ def create_customers():
 # ######################################################################
 # # DELETE A PET
 # ######################################################################
-# @app.route('/customers/<int:customer_id>', methods=['DELETE'])
-def delete_customers(customer_id):
+@app.route('/customers/<int:user_id>', methods=['DELETE'])
+def delete_customers(user_id):
 
     """
     Delete a Customer
  
     This endpoint will delete a Customer based the id specified in the path
      """
-    app.logger.info('Request to delete customer with id: %s', customer_id)
-    customer = Customer.find(customer_id)
+    app.logger.info('Request to delete customer with user_id: %s', user_id)
+    customer = Customer.find(user_id)
     if customer:
         customer.delete()
     return make_response('', status.HTTP_204_NO_CONTENT)
