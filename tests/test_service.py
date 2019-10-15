@@ -27,7 +27,7 @@ import logging
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
 from service.models import Customer, Address, DataValidationError, db
-from .Customer_factory import CustomerFactory
+from tests.customer_factory import CustomerFactory
 from service.service import app, init_db, initialize_logging
 
 #DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
