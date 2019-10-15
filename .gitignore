@@ -1,5 +1,11 @@
+# cache folder
+__pycache__/
+
 # log files
 *.log
 
 # Vagrant
 .vagrant
+
+# cache
+service/__pycache__/*
