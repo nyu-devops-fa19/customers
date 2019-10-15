@@ -16,9 +16,37 @@
 Test Factory to make fake objects for testing
 """
 import factory
-from factory.fuzzy import FuzzyChoice
-from service.models import Customer
+import string
+import random
+from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
+from service.models import Customer, Address
+
+class AddressFactory(factory.Factory):
+	""" Creates fake addresses that you don't have to feed """
+	class Meta:
+		model = Address
+	id = factory.Sequence(lambda n: n)
+	street = FuzzyText(random.randint(1,20))
+	apartment = FuzzyText(random.randint(1,20))
+	city = FuzzyText(random.randint(1,20))
+	state = FuzzyText(random.randint(1,20))
+	zip_code = FuzzyText(5, chars=string.digits)
+	customer_id = factory.Sequence(lambda n: n)
+
 
 class CustomerFactory(factory.Factory):
     """ Creates fake customers that you don't have to feed """
-    
+    class Meta:
+        model = Customer
+    customer_id = factory.Sequence(lambda n: n)
+    first_name = factory.Faker('first_name')
+    last_name = factory.Faker('last_name')
+    user_id = FuzzyText(random.randint(1,20))
+    password = FuzzyText(random.randint(1,20))
+    active = FuzzyChoice(choices=[True, False])
+    address_id = factory.Sequence(lambda n: n)
+
+if __name__ == '__main__':
+    for _ in range(10):
+        customer = CustomerFactory()
+        print(customer.serialize())
