@@ -38,6 +38,8 @@ DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost
 ######################################################################
 class TestCustomerServer(unittest.TestCase):
     """ Customer Server Tests """
+
+    @classmethod
     def setUpClass(cls):
         """ Run once before all tests """
         app.debug = False
