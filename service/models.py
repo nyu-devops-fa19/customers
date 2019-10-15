@@ -41,7 +41,7 @@ class Address(db.Model):
     city = db.Column(db.String)
     state = db.Column(db.String)
     zip_code = db.Column(db.String)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
 
     def serialize(self):
         """ Serializes an Address into a dictionary """
@@ -149,9 +149,9 @@ class Customer(db.Model):
             self.password = data['password']
             self.active = True
         except KeyError as error:
-            raise DataValidationError('Invalid pet: missing ' + error.args[0])
+            raise DataValidationError('Invalid customer: missing ' + error.args[0])
         except TypeError as error:
-            raise DataValidationError('Invalid pet: body of request contained' \
+            raise DataValidationError('Invalid customer: body of request contained' \
                 'bad or no data')
         return self
 
@@ -187,13 +187,13 @@ class Customer(db.Model):
         Pet.logger.info('Deleting %s', self.name)
         db.session.delete(self)
         db.session.commit()
-
+    '''
     @classmethod
-    def find(cls, pet_id):
-        """ Finds a Pet by it's ID """
-        cls.logger.info('Processing lookup for id %s ...', pet_id)
-        return cls.query.get(pet_id)
-
+    def find(cls, user_id):
+        """ Finds a Customer by it's ID """
+        cls.logger.info('Processing lookup for id %s ...', user_id)
+        return cls.query.filter(cls.user_id == user_id)
+    '''
     @classmethod
     def find_or_404(cls, pet_id):
         """ Find a Pet by it's id """

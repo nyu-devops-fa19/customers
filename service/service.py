@@ -110,26 +110,27 @@ def index():
 @app.route('/customers', methods=['GET'])
 def list_customers():
     """ Returns all of the Pets """
-    app.logger.info('Request for pet list')
+    app.logger.info('Request for customers list')
     customers = Customer.all()
 
     results = [cust.serialize() for cust in customers]
     return make_response(jsonify(results), status.HTTP_200_OK)
 # ######################################################################
-# # RETRIEVE A PET
+# # RETRIEVE A CUSTOMER
 # ######################################################################
-# @app.route('/pets/<int:pet_id>', methods=['GET'])
-# def get_pets(pet_id):
-#     """
-#     Retrieve a single Pet
-# 
-#     This endpoint will return a Pet based on it's id
-#     """
-#     app.logger.info('Request for pet with id: %s', pet_id)
-#     pet = Pet.find(pet_id)
-#     if not pet:
-#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+@app.route('/customers/<string:user_id>', methods=['GET'])
+def get_customers(user_id):
+    """
+    Retrieve a single customer
+
+    This endpoint will return a Customer based on it's id
+    """
+    app.logger.info('Request for customer with user_id: %s', user_id)
+    cust = Customer.find(user_id)
+    if not cust:
+        raise NotFound("Customer with user_id '{}' was not found.".format(user_id))
+    result = [customer.serialize() for customer in cust]
+    return make_response(jsonify(result), status.HTTP_200_OK)
 # 
 # 
 # ######################################################################
