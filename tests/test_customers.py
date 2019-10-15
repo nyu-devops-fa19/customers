@@ -64,7 +64,13 @@ class TestCustomers(unittest.TestCase):
 		    #     state= "New York",
 		    #     zip_code= "100",
         # )
-        cust = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", address_id="100")
+        cust = Customer (
+            first_name="Marry", 
+            last_name="Wang", 
+            user_id="marrywang", 
+            password="password", 
+            address_id="100",
+        )
         self.assertTrue(cust != None)
         self.assertEqual(cust.customer_id, None)
         self.assertEqual(cust.first_name, "Marry")
@@ -72,3 +78,57 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(cust.user_id, "marrywang")
         self.assertEqual(cust.password, "password")
         self.assertEqual(cust.address_id, "100")
+
+    def test_create_a_address(self):
+        """ Create an address and assert that it exists """
+        addr = Address (
+            street="100 W 100th St.",
+            apartment="100",
+            city="New York",
+            state="New York",
+            zip_code="10035",
+        )
+        self.assertTrue(addr != None)
+        self.assertEqual(addr.id, None)
+        self.assertEqual(addr.street, "100 W 100th St.")
+        self.assertEqual(addr.apartment, "100")
+        self.assertEqual(addr.city, "New York")
+        self.assertEqual(addr.zip_code, "10035")
+
+    def test_add_a_customer(self):
+        """ Create a address and add it to the database, then 
+        create a customer with the address.id and add it to the database 
+        """
+        custs = Customer.all()
+        self.assertEqual(custs, [])
+        cust = Customer (
+            first_name="Marry", 
+            last_name="Wang", 
+            user_id="marrywang", 
+            password="password", 
+            active = True
+        )
+        self.assertTrue(cust != None)
+        self.assertEqual(cust.customer_id, None)
+        self.assertEqual(cust.address_id, None)
+        
+        cust.save()
+
+        addr = Address (
+            street="100 W 100th St.",
+            apartment="100",
+            city="New York",
+            state="New York",
+            zip_code="10035",
+        )
+        addr.save()
+        cust.address_id = addr.id
+        addr.customer_id = cust.customer_id
+         # Asert that it was assigned an id and shows up in the database
+        self.assertEqual(addr.id, 1)
+        custs = Customer.all()
+        self.assertEqual(len(custs), 1)
+
+        self.assertEqual(cust.customer_id, 1)
+        custs = Customer.all()
+        self.assertEqual(len(custs), 1)
