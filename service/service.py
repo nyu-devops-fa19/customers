@@ -185,13 +185,13 @@ def create_customers():
 # ######################################################################
 # # DELETE A PET
 # ######################################################################
-@app.route('/customers/<int:customer_id>', methods=['DELETE'])
+# @app.route('/customers/<int:customer_id>', methods=['DELETE'])
 def delete_customers(customer_id):
 
     """
-    Delete a Pet
+    Delete a Customer
  
-    This endpoint will delete a Pet based the id specified in the path
+    This endpoint will delete a Customer based the id specified in the path
      """
     app.logger.info('Request to delete customer with id: %s', customer_id)
     customer = Customer.find(customer_id)
