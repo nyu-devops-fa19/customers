@@ -91,6 +91,17 @@ class Address(db.Model):
         app.app_context().push()
         db.create_all()  # make our sqlalchemy tabless
 
+    @classmethod
+    def all(cls):
+        """ Returns all of the Addresses in the database """
+        cls.logger.info('Processing all Addresses')
+        return cls.query.all()
+
+    def delete(self):
+        """ Removes a Address from the data store """
+        Customer.logger.info('Deleting %s %s', self.street, self.apartment)
+        db.session.delete(self)
+        db.session.commit()
 
 class Customer(db.Model):
     """

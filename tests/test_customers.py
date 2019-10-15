@@ -73,16 +73,21 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(cust.password, "password")
         self.assertEqual(cust.address_id, "100")
 
-
+    
     def test_delete_a_customer(self):
         """ Delete a customer """
         customer = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", active = True, address_id=100)
+        address = Address(street = "100 W 100 St.", apartment = "100", city = "New York", state = "New York", zip_code = "100")
         customer.save()
+        address.save()
         self.assertEqual(len(Customer.all()), 1)
+        self.assertEqual(len(Address.all()), 1)
         
         # delete the customer and make sure it isn't in the database
         customer.delete()
+        address.delete()
         self.assertEqual(len(Customer.all()), 0)
+        self.assertEqual(len(Address.all()), 0)
 
 
 
