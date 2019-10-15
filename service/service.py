@@ -185,7 +185,7 @@ def create_customers():
 # ######################################################################
 # # DELETE A PET
 # ######################################################################
-@app.route('/customers/<int:user_id>', methods=['DELETE'])
+@app.route('/customers/<string:user_id>', methods=['DELETE'])
 def delete_customers(user_id):
 
     """
