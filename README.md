@@ -38,4 +38,7 @@ state - state of primary address (String)
 zip - zip code of primary address (String)  
   
 7. Deactivate:
-* PUT /customers/<id>
+* PUT /customers/user_id/deactivate
+
+8. Activate:
+* PUT /customers/user_id/activate
