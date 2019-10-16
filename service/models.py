@@ -41,7 +41,7 @@ class Address(db.Model):
     city = db.Column(db.String)
     state = db.Column(db.String)
     zip_code = db.Column(db.String)
-    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=True)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.customer_id'), nullable=False)
 
     def serialize(self):
         """ Serializes an Address into a dictionary """
@@ -93,36 +93,42 @@ class Address(db.Model):
 
     @classmethod
     def find_by_city(cls, city):
-        """ Returns all Customers in the given city
+        """ Returns all addresses in the given city
 
         Args:
-            name (string): the name of the Customers you want to match
+            city (string): the city of the Addresses you want to match
         """
         cls.logger.info('Processing city query for %s ...', city)
         addresses = cls.query.filter(cls.city == city)
-        return [Customer.find(addr.customer_id) for addr in addresses]
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
     
     @classmethod
     def find_by_state(cls, state):
-        """ Returns all Customers in the given state
+        """ Returns all addresses in the given state
 
         Args:
-            name (string): the name of the Customers you want to match
+            state (string): the state of the Addresses you want to match
         """
         cls.logger.info('Processing state query for %s ...', state)
         addresses = cls.query.filter(cls.state == state)
-        return [Customer.find(addr.customer_id) for addr in addresses]
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
 
     @classmethod
     def find_by_zip(cls, zip_code):
-        """ Returns all Customers in the given zip code
+        """ Returns all addresses in the given zip code
 
         Args:
-            name (string): the name of the Customers you want to match
+            zip_code (string): the zip_code of the Customers you want to match
         """
         cls.logger.info('Processing zip query for %s ...', zip_code)
         addresses = cls.query.filter(cls.zip_code == zip_code)
-        return [Customer.find(addr.customer_id) for addr in addresses]
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
+
+    @classmethod
+    def find(cls, addr_id):
+        """ Finds an address by its ID """
+        cls.logger.info('Processing lookup for id %s ...', addr_id)
+        return cls.query.get(addr_id).serialize()
 
 
 class Customer(db.Model):
@@ -159,7 +165,8 @@ class Customer(db.Model):
                 "first name": self.first_name,
                 "last name": self.last_name,
                 "user id": self.user_id,
-                "active": self.active}
+                "active": self.active,
+                "address": Address.find(self.address_id)}
 
     def deserialize(self, data):
         """
@@ -207,16 +214,6 @@ class Customer(db.Model):
         return cls.query.all()
 
     @classmethod
-    def find_by_user_id(cls, uid):
-        """ Returns all Customers with the given user id
-
-        Args:
-            name (string): the name of the Customers you want to match
-        """
-        cls.logger.info('Processing uid query for %s ...', uid)
-        return cls.query.filter(cls.user_id == uid)
-
-    @classmethod
     def find_by_first_name(cls, f_name):
         """ Returns all of the Customers with the given first name
 
@@ -246,12 +243,6 @@ class Customer(db.Model):
         """
         cls.logger.info('Processing active query for %s ...', active)
         return cls.query.filter(cls.active == active)
-
-    @classmethod
-    def find(cls, cust_id):
-        """ Finds a Customer by it's ID """
-        cls.logger.info('Processing lookup for customer_id %s ...', cust_id)
-        return cls.query.get(cust_id)
     
     '''
     TODO: Add methods for save, delete, list and query operations here
@@ -262,11 +253,22 @@ class Customer(db.Model):
         db.session.delete(self)
         db.session.commit()
     '''
+
     @classmethod
-    def find(cls, user_id):
-        """ Finds a Customer by it's ID """
+    def find_by_cust_id(cls, cust_id):
+        """ Finds a Customer by it's customer ID """
+        cls.logger.info('Processing lookup for customer_id %s ...', cust_id)
+        active_customers = cls.query.filter(cls.customer_id == cust_id and cls.active)
+        return active_customers[0]
+
+    @classmethod
+    def find(cls, user_id, filter_activate = True):
+        """ Finds a Customer by userID """
         cls.logger.info('Processing lookup for id %s ...', user_id)
-        return cls.query.filter(cls.user_id == user_id)
+        if filter_activate:
+            return cls.query.filter(cls.user_id == user_id and cls.active)
+        else:
+            return cls.query.filter(cls.user_id == user_id)
     '''
     @classmethod
     def find_or_404(cls, pet_id):
