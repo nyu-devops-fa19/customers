@@ -90,6 +90,15 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
         self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
         self.assertEqual(new_customer['active'], True, "active status not match")
+
+        resp = self.app.get(location,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_customer = resp.get_json()[0]
+        self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
+        self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
+        self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
+        self.assertEqual(new_customer['active'], True, "active status not match")
         
     def test_update_customer(self):
         """ Update an existing Customer """
@@ -213,5 +222,11 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
-
+    
+    # @patch('service.models.Customer.find')
+    # def test_bad_request(self, bad_request_mock):
+    #     """ Test a Bad Request error from Find By User_id """
+    #     bad_request_mock.side_effect = DataValidationError()
+    #     resp = self.app.get('/customers', query_string='user_id=fido')
+    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
