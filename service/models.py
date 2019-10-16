@@ -185,7 +185,7 @@ class Customer(db.Model):
     def find(cls, user_id, filter_activate = True):
         """ Finds a Customer by ID """
         cls.logger.info('Processing lookup for id %s ...', user_id)
-        if not filter_activate:
+        if filter_activate:
             return cls.query.filter(cls.user_id == user_id and cls.active)
         else:
             return cls.query.filter(cls.user_id == user_id)
