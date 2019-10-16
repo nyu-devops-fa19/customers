@@ -207,3 +207,39 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(addr.city, "New York")
         self.assertEqual(addr.state, "New York")
         self.assertEqual(addr.zip_code, "100")
+
+    def test_find_customer(self):
+        """ Find active/inactive customers with filter """
+        active_customer = Customer (
+            first_name="Peter",
+            last_name="Parker",
+            user_id="pparker",
+            password="password",
+            active = True
+        )
+        active_customer.save()
+
+        inactive_customer = Customer (
+            first_name="Peter.B.",
+            last_name="Parker",
+            user_id="pbparker",
+            password="password",
+            active = False
+        )
+        inactive_customer.save()
+
+        """ Find active customers with filter """
+        result_active_filter = Customer.find(active_customer.user_id)
+        self.assertEqual(result_active_filter[0].user_id, active_customer.user_id)
+
+        """ Find active customers with filter """
+        result_active_no_filter = Customer.find(active_customer.user_id)
+        self.assertEqual(result_active_no_filter[0].user_id, active_customer.user_id)
+
+        """ Find inactive customers with filter """
+        result_inactive_filter = Customer.find(inactive_customer.user_id)
+        self.assertEqual(result_inactive_filter[0].user_id, inactive_customer.user_id)
+
+        """ Find inactive customers with filter """
+        result_inactive_no_filter = Customer.find(inactive_customer.user_id)
+        self.assertEqual(result_inactive_no_filter[0].user_id, inactive_customer.user_id)

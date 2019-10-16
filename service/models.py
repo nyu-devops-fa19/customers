@@ -182,10 +182,13 @@ class Customer(db.Model):
         db.session.commit()
     '''
     @classmethod
-    def find(cls, user_id):
-        """ Finds a Customer by it's ID """
+    def find(cls, user_id, filter_activate = True):
+        """ Finds a Customer by ID """
         cls.logger.info('Processing lookup for id %s ...', user_id)
-        return cls.query.filter(cls.user_id == user_id)
+        if not filter_activate:
+            return cls.query.filter(cls.user_id == user_id and cls.active)
+        else:
+            return cls.query.filter(cls.user_id == user_id)
     '''
     @classmethod
     def find_or_404(cls, pet_id):
