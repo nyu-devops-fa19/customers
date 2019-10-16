@@ -317,3 +317,21 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
 
+    def test_create_customer_415(self):
+        """ Test creating a customer with unsupported content type """
+        resp = self.app.post('/customers', data={
+            'first_name': 'cust_first_name',
+            'last_name': 'cust_last_name',
+            'customer_id': 100,
+        }, headers={'content-type': 'text/plain'})
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_rename_customer_invalid_content_type(self):
+        """ Test renaming a wishlist with invalid content type """
+        customer = Customer(first_name="Marry", last_name="Wang", user_id="newname", password="password", active = True, address_id=100)
+        customer.save()
+        resp = self.app.put('/customers/%s' % customer.user_id, json={
+            'user_id': 'newname'
+        }, headers={'content-type': 'text/plain'})
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
