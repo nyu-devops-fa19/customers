@@ -61,7 +61,36 @@ class TestCustomerServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-
+        
+    def test_create_customer(self):
+        """create a new customer"""
+        body = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "user_id": "lukeyang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        resp = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertTrue(location != None)
+        # Check the data is correct
+        new_customer = resp.get_json()
+        self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
+        self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
+        self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
+        self.assertEqual(new_customer['active'], True, "active status not match")
+        
     def test_update_customer(self):
         """ Update an existing Customer """
         # create a customer to update
@@ -118,6 +147,71 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        
+        
+    def test_deactivate_customer(self):
+        """ Deactivate an existing customer """
+        # create a customer to deactivate
+        body = {
+            "first_name": "Peter",
+            "last_name": "Parker",
+            "user_id": "pparker",
+            "password": "withGreatPower",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_create = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp_create.get_json()['active'], True)
 
+        # deactivate the customer
+        resp_deactivate = self.app.put('/customers/pparker/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_deactivate.get_json()['active'], False)
+
+    def test_activate_customer(self):
+        """ Activate an existing customer """
+        # create a customer to activate
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_create = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp_create.get_json()['active'], True)
+
+        # deactivate the customer
+        resp_deactivate = self.app.put('/customers/gstacy/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_deactivate.get_json()['active'], False)
+
+        # activate the customer
+        resp_activate = self.app.put('/customers/gstacy/activate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_activate.get_json()['active'], True)
 
 

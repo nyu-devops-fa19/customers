@@ -15,19 +15,21 @@ address - JSON containing:
 	state - String  
 	zip_code - String  
 For example:  
-{  
-    "first_name": "John",  
-    "last_name": "Doe",  
-    "user_id": "jhd345",  
-    "password": "Asdf@1234",  
-    "address": {  
-        "street": "48 John St",  
-        "apartment": "1B",  
-        "city": "New York",  
-        "state": "New York",  
-        "zip_code": "22890"  
-    }  
-}  
+```
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "user_id": "jhd345",
+    "password": "Asdf@1234",
+    "address": {
+        "street": "48 John St",
+        "apartment": "1B",
+        "city": "New York",
+        "state": "New York",
+        "zip_code": "22890"
+    }
+}
+```
 
 2. Read:
 * GET /customers/user_id  

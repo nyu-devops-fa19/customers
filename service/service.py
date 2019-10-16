@@ -21,6 +21,7 @@ GET /pets/{id} - Returns the Pet with a given id number
 POST /pets - creates a new Pet record in the database
 PUT /pets/{id} - updates a Pet record in the database
 DELETE /pets/{id} - deletes a Pet record in the database
+PUT /customers/{user_id}/deactivate - deactivates a Customer record in the database
 """
 
 import os
@@ -103,10 +104,9 @@ def index():
 #                   paths=url_for('list_pets', _external=True)
                   ), status.HTTP_200_OK
 
-# TODO: Modify below according to RESTful APIs of customers
-# ######################################################################
-# # LIST ALL CUSTOMERS
-# ######################################################################
+######################################################################
+# LIST ALL CUSTOMERS
+######################################################################
 @app.route('/customers', methods=['GET'])
 def list_customers():
     """ Returns all of the Pets """
@@ -115,9 +115,10 @@ def list_customers():
 
     results = [cust.serialize() for cust in customers]
     return make_response(jsonify(results), status.HTTP_200_OK)
-# ######################################################################
-# # RETRIEVE A CUSTOMER
-# ######################################################################
+
+######################################################################
+# RETRIEVE A CUSTOMER
+######################################################################
 @app.route('/customers/<string:user_id>', methods=['GET'])
 def get_customers(user_id):
     """
@@ -131,11 +132,10 @@ def get_customers(user_id):
         raise NotFound("Customer with user_id '{}' was not found.".format(user_id))
     result = [customer.serialize() for customer in cust]
     return make_response(jsonify(result), status.HTTP_200_OK)
-# 
-# 
-# ######################################################################
-# # ADD A NEW CUSTOMER
-# ######################################################################
+
+######################################################################
+# ADD A NEW CUSTOMER
+######################################################################
 @app.route('/customers', methods=['POST'])
 def create_customers():
     """
@@ -162,6 +162,7 @@ def create_customers():
                          {
                              'Location': location_url
                          })
+
 
 ######################################################################
 # DELETE A CUSTOMER
@@ -197,12 +198,52 @@ def update_customers(user_id):
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
-    # customers_array = [cust.serialize() for cust in customers]
-    # cust = customers_array[0]
-
-
     cust.deserialize(request.get_json())
     cust.user_id = user_id
+    cust.save()
+    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DEACTIVATE A CUSTOMER
+######################################################################
+@app.route('/customers/<string:user_id>/deactivate', methods=['PUT'])
+def deactivate_customers(user_id):
+    """
+    Deactivate a Customer
+    This endpoint will deactivate a Customer
+    """
+    app.logger.info('Request to deactivate customer with id: %s', user_id)
+    check_content_type('application/json')
+    customers = Customer.find(user_id)
+    if not customers:
+        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+
+    cust = customers[0]
+    cust.deserialize(request.get_json())
+    cust.user_id = user_id
+    cust.active = False
+    cust.save()
+    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# ACTIVATE A CUSTOMER
+######################################################################
+@app.route('/customers/<string:user_id>/activate', methods=['PUT'])
+def activate_customers(user_id):
+    """
+    Activate a Customer
+    This endpoint will activate a Customer
+    """
+    app.logger.info('Request to activate customer with id: %s', user_id)
+    check_content_type('application/json')
+    customers = Customer.find(user_id, False)
+    if not customers:
+        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+
+    cust = customers[0]
+    cust.deserialize(request.get_json())
+    cust.user_id = user_id
+    cust.active = True
     cust.save()
     return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
