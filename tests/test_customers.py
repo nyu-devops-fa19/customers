@@ -207,9 +207,3 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(addr.city, "New York")
         self.assertEqual(addr.state, "New York")
         self.assertEqual(addr.zip_code, "100")
-
-    # def test_deserialize_bad_data(self):
-    #     """ Test deserialization of bad data """
-    #     data = "this is not a dictionary"
-    #     pet = Pet()
-    #     self.assertRaises(DataValidationError, pet.deserialize, data)
