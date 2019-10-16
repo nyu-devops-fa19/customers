@@ -110,7 +110,7 @@ def index():
 @app.route('/customers', methods=['GET'])
 def list_customers():
     """ Returns all of the Pets """
-    app.logger.info('Request for pet list')
+    app.logger.info('Request for customers list')
     customers = Customer.all()
 
     results = [cust.serialize() for cust in customers]
@@ -154,7 +154,8 @@ def create_customers():
     addr.deserialize(data['address'])
     addr.customer_id = customer_id
     addr.save()
-
+    cust.address_id = addr.id
+    cust.save()
     message = cust.serialize()
     location_url = url_for('create_customers', customer_id=cust.customer_id, _external=True)
     return make_response(jsonify(message), status.HTTP_201_CREATED,
