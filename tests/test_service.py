@@ -82,6 +82,23 @@ class TestCustomerServer(unittest.TestCase):
             test_customer.address_id = addr["id"]
             customers.append(test_customer)
         return customers
+
+    def test_create_customer_400_missing_uid(self):
+        body = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        """ Test wrong request when creating a customer - missing user_id """
+        resp = self.app.post('/customers', json=body, content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         
     def test_create_customer(self):
         """create a new customer"""
@@ -107,15 +124,6 @@ class TestCustomerServer(unittest.TestCase):
         self.assertTrue(location != None)
         # Check the data is correct
         new_customer = resp.get_json()
-        self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
-        self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
-        self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
-        self.assertEqual(new_customer['active'], True, "active status not match")
-
-        resp = self.app.get(location,
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_customer = resp.get_json()[0]
         self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
         self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
         self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
@@ -316,4 +324,3 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
-
