@@ -75,7 +75,6 @@ class TestCustomerServer(unittest.TestCase):
         test_customer.save()
         # update the customer
         test_customer.first_name = 'Cow'
-        print(test_customer.internal_serialize())
         resp = self.app.put('/customers/{}'.format(test_customer.user_id),
                             json=test_customer.internal_serialize(),
                             content_type='application/json')
