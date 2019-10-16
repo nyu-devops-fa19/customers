@@ -97,6 +97,18 @@ class Address(db.Model):
         cls.logger.info('Processing lookup for id %s ...', addr_id)
         return cls.query.get(addr_id).serialize()
 
+    @classmethod
+    def all(cls):
+        """ Returns all of the Addresses in the database """
+        cls.logger.info('Processing all Addresses')
+        return cls.query.all()
+
+    @classmethod
+    def delete(cls, addr_id):
+        """ Removes a Address from the data store """
+        cls.logger.info('Deleting %s', addr_id)
+        db.session.delete(cls.query.get(addr_id))
+        db.session.commit()
 
 class Customer(db.Model):
     """
@@ -136,6 +148,7 @@ class Customer(db.Model):
                 "address": Address.find(self.address_id)}
 
     def internal_serialize(self):
+        """ Internal_serializes a Customer into a dictionary """
         return {"first_name": self.first_name,
                 "last_name": self.last_name, 
                 "user_id": self.user_id,
@@ -187,15 +200,14 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
-    '''
-    TODO: Add methods for save, delete, list and query operations here
-
+   
     def delete(self):
-        """ Removes a Pet from the data store """
-        Pet.logger.info('Deleting %s', self.name)
+        """ Removes a Customer from the data store """
+        Customer.logger.info('Deleting %s %s', self.first_name, self.last_name)
+        Address.delete(self.address_id)
         db.session.delete(self)
         db.session.commit()
-    '''
+
     @classmethod
     def find(cls, user_id, filter_activate = True):
         """ Finds a Customer by ID """

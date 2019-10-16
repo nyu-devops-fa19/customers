@@ -61,28 +61,7 @@ class TestCustomerServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-
-    count = 10
-
-    def test_update_customer(self):
-        """ Update an existing Customer """
-        # create a customer to update
-        test_customer = CustomerFactory()
-        test_address = AddressFactory()
-        test_customer.save()
-        test_address.customer_id = test_customer.customer_id
-        test_address.save()
-        test_customer.address_id = test_address.id
-        test_customer.save()
-        # update the customer
-        test_customer.first_name = 'Cow'
-        resp = self.app.put('/customers/{}'.format(test_customer.user_id),
-                            json=test_customer.internal_serialize(),
-                            content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_customer = resp.get_json()
-        self.assertEqual(updated_customer['first_name'], 'Cow')
-
+        
     def test_create_customer(self):
         """create a new customer"""
         body = {
@@ -111,7 +90,65 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
         self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
         self.assertEqual(new_customer['active'], True, "active status not match")
+        
+    def test_update_customer(self):
+        """ Update an existing Customer """
+        # create a customer to update
+        test_customer = CustomerFactory()
+        test_address = AddressFactory()
+        test_customer.save()
+        test_address.customer_id = test_customer.customer_id
+        test_address.save()
+        test_customer.address_id = test_address.id
+        test_customer.save()
+        # update the customer
+        test_customer.first_name = 'Cow'
+        resp = self.app.put('/customers/{}'.format(test_customer.user_id),
+                            json=test_customer.internal_serialize(),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_customer = resp.get_json()
+        self.assertEqual(updated_customer['first_name'], 'Cow')
 
+    def _create_customer(self):
+        """ create a customer for testing delete"""
+        test_customer = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "user_id": "lukeyang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        resp = self.app.post('/customers',
+                            json=test_customer,
+                            content_type='application/json')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test customer')
+        new_customer = resp.get_json()
+
+        return new_customer
+
+    def test_delete_customer(self):
+        # create a customer to update
+        test_customer = self._create_customer()
+        """ Delete a Customer """
+        resp = self.app.delete('/customers/{}'.format(test_customer['user_id']),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get('/customers/{}'.format(test_customer['user_id']),
+                            content_type='application/json')
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        
+        
     def test_deactivate_customer(self):
         """ Deactivate an existing customer """
         # create a customer to deactivate
@@ -176,4 +213,5 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
+
 
