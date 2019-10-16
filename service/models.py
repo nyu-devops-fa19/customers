@@ -160,16 +160,16 @@ class Customer(db.Model):
     active = db.Column(db.Boolean, nullable=False)
     address_id = db.Column(db.Integer, nullable=True)
 
-    __table_args__ = (
-        CheckConstraint('char_length(password) > 5',
-                        name='password_min_length'),
-    )
+    # __table_args__ = (
+    #     CheckConstraint('char_length(password) > 5',
+    #                     name='password_min_length'),
+    # )
 
-    @validates('password')
-    def validate_password(self, key, password) -> str:
-        if len(password) <= 5:
-            raise ValueError('password too short')
-        return password
+    # @validates('password')
+    # def validate_password(self, key, password) -> str:
+    #     if len(password) <= 5:
+    #         raise ValueError('password too short')
+    #     return password
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """

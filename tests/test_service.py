@@ -83,6 +83,23 @@ class TestCustomerServer(unittest.TestCase):
             customers.append(test_customer)
         return customers
 
+    def test_create_customer_400_missing_uid(self):
+        body = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        """ Test wrong request when creating a customer - missing user_id """
+        resp = self.app.post('/customers', json=body, content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_create_customer(self):
         """create a new customer"""
         body = {
@@ -173,7 +190,6 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
 
     def test_deactivate_customer(self):
         """ Deactivate an existing customer """
@@ -396,4 +412,22 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.put('/customers/{}',
                             json=body,
                             content_type='text/plain')
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_customer_415(self):
+        """ Test creating a customer with unsupported content type """
+        resp = self.app.post('/customers', data={
+            'first_name': 'cust_first_name',
+            'last_name': 'cust_last_name',
+            'customer_id': 100,
+        }, headers={'content-type': 'text/plain'})
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_rename_customer_invalid_content_type(self):
+        """ Test renaming a wishlist with invalid content type """
+        customer = Customer(first_name="Marry", last_name="Wang", user_id="newname", password="password", active = True, address_id=100)
+        customer.save()
+        resp = self.app.put('/customers/%s' % customer.user_id, json={
+            'user_id': 'newname'
+        }, headers={'content-type': 'text/plain'})
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
