@@ -73,9 +73,6 @@ class TestCustomerServer(unittest.TestCase):
         test_address.save()
         test_customer.address_id = test_address.id
         test_customer.save()
-
-        print("******Before********")
-        print(test_customer)
         # update the customer
         test_customer.first_name = 'Cow'
         print(test_customer.internal_serialize())
@@ -83,9 +80,5 @@ class TestCustomerServer(unittest.TestCase):
                             json=test_customer.internal_serialize(),
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-
-        print("******After********")
-        print(resp)
-
         updated_customer = resp.get_json()
         self.assertEqual(updated_customer['first_name'], 'Cow')
