@@ -97,7 +97,7 @@ class TestCustomerServer(unittest.TestCase):
                 "state": "New York",
                 "zip_code": "100"
             }
-        }   
+        }
         resp = self.app.post('/customers',
                              json=body,
                              content_type='application/json')
@@ -111,3 +111,34 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
         self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
         self.assertEqual(new_customer['active'], True, "active status not match")
+
+    def test_deactivate_customer(self):
+        """ Deactivate a customer """
+        # create a customer to deactivate
+        body = {
+            "first_name": "Peter",
+            "last_name": "Parker",
+            "user_id": "pparker",
+            "password": "withGreatPower",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_create = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp_create.get_json()['active'], True)
+
+        # deactivate the customer
+        resp_deactivate = self.app.put('/customers/pparker/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_deactivate.get_json()['active'], False)
+
+
