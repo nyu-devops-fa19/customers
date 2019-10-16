@@ -314,3 +314,48 @@ class TestCustomers(unittest.TestCase):
         """ Find inactive customers with filter """
         result_inactive_no_filter = Customer.find(inactive_customer.user_id)
         self.assertEqual(result_inactive_no_filter[0].user_id, inactive_customer.user_id)
+
+        def test_queries(self):
+            """ Find active/inactive customers with filter """
+            cust = Customer(
+                first_name="Peter",
+                last_name="Parker",
+                user_id="pparker",
+                password="password",
+                active = True
+            )
+            cust.save()
+            addr = Address(
+                apartment="1R",
+                city="Chicago",
+                state="Illinois",
+                street="6721 5th Ave",
+                zip_code="10030",
+                customer_id=cust.customer_id
+            )
+            addr.save()
+            cust.address_id = addr.id
+            cust.save()
+            """ Find by first name """
+            cust_fname = Customer.find_by_first_name(cust.first_name)
+            self.assertEqual(cust_fname[0].customer_id, cust.customer_id)
+
+            """ Find by last name """
+            cust_lname = Customer.find_by_last_name(cust.last_name)
+            self.assertEqual(cust_lname[0].customer_id, cust.customer_id)
+
+            """ Find by status """
+            cust_active = Customer.find_by_status(False)
+            self.assertEqual(len(cust_active), 0)
+
+            """ Find by city """
+            cust_city = Address.find_by_city(cust.city)
+            self.assertEqual(cust_city[0].customer_id, cust.customer_id)
+
+            """ Find by state """
+            cust_state = Address.find_by_state(cust.state)
+            self.assertEqual(cust_state[0].customer_id, cust.customer_id)
+
+            """ Find by zip code """
+            cust_zip = Address.find_zip(cust.zip_code)
+            self.assertEqual(cust_zip[0].customer_id, cust.customer_id)

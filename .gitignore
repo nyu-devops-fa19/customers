@@ -12,4 +12,7 @@ __pycache__/
 # coverage
 .coverage.*
 .coverage
+
+#DS_Store
+.DS_Store
 cover/
