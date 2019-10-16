@@ -82,7 +82,7 @@ class TestCustomerServer(unittest.TestCase):
             test_customer.address_id = addr["id"]
             customers.append(test_customer)
         return customers
-        
+
     def test_create_customer(self):
         """create a new customer"""
         body = {
@@ -120,7 +120,7 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
         self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
         self.assertEqual(new_customer['active'], True, "active status not match")
-        
+
     def test_update_customer(self):
         """ Update an existing Customer """
         # create a customer to update
@@ -173,8 +173,8 @@ class TestCustomerServer(unittest.TestCase):
                             content_type='application/json')
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        
-        
+
+
     def test_deactivate_customer(self):
         """ Deactivate an existing customer """
         # create a customer to deactivate
@@ -281,6 +281,7 @@ class TestCustomerServer(unittest.TestCase):
         # check the data just to be sure
         for customer in data:
             self.assertEqual(customer['address']['zip_code'], test_zip)
+
     def test_activate_customer(self):
         """ Activate an existing customer """
         # create a customer to activate
@@ -317,3 +318,82 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_activate.get_json()['active'], True)
 
+    def test_deactivate_customer_not_found(self):
+        """ Deactivate a non-existing customer """
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_deactivate = self.app.put('/customers/bwayne/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_activate_customer_not_found(self):
+        """ Activate a non-existing customer """
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_activate = self.app.put('/customers/bwayne/activate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_activate.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_update_customer_not_found(self):
+        """ Update a non-existing Customer """
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp = self.app.put('/customers/bwayne',
+                            json=body,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_invalid_content_type(self):
+        """ Invalid content type """
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp = self.app.put('/customers/{}',
+                            json=body,
+                            content_type='text/plain')
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
