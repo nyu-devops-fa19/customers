@@ -1,7 +1,21 @@
+# Customers
+
+## Description
 customer squads of a e-commerce website
 
-APIs:
-1. Create:
+## To run the Flask app 
+
+```
+vagrant up
+vagrant ssh
+cd /vagrant
+nosetests
+FLASK_APP=service:app flask run --host=0.0.0.0 --port=5000
+```
+Then on your own machine, you can see by visiting: http://localhost:5000/
+
+## APIs routes
+- **Create** 
 * POST /customers  
 Body: JSON containing the following fields:  
 first_name - String  
@@ -31,19 +45,19 @@ For example:
 }
 ```
 
-2. Read:
+- **Read** 
 * GET /customers/user_id  
     
-3. Update:
+- **Update**
 * PUT /customers/user_id
   
-4. Delete:
+- **Delete**
 * DELETE /customers/user_id
   
-5. List:
+- **List**
 * GET /customers
 
-6. Query:
+- **Query**
 * GET /customers?param={value}
 Where param could be either of the following:  
 fname - first name (String)  
@@ -53,8 +67,12 @@ city - city of primary address (String)
 state - state of primary address (String)  
 zip - zip code of primary address (String)  
   
-7. Deactivate:
+- **Deactivate**
 * PUT /customers/user_id/deactivate
 
-8. Activate:
+- **Activate**
 * PUT /customers/user_id/activate
+
+## Running the tests
+Run the tests using `nose`  
+`nosetests`
