@@ -62,6 +62,7 @@ class TestCustomerServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    count = 10
 
     def test_update_customer(self):
         """ Update an existing Customer """
@@ -81,3 +82,32 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_customer = resp.get_json()
         self.assertEqual(updated_customer['first_name'], 'Cow')
+
+    def test_create_customer(self):
+        """create a new customer"""
+        body = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "user_id": "lukeyang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }   
+        resp = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertTrue(location != None)
+        # Check the data is correct
+        new_customer = resp.get_json()
+        self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
+        self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
+        self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
+        self.assertEqual(new_customer['active'], True, "active status not match")
