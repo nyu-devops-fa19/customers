@@ -134,6 +134,21 @@ class TestCustomers(unittest.TestCase):
         custs = Customer.all()
         self.assertEqual(len(custs), 1)
 
+    def test_update_a_customer(self):
+        """ Update a customer """
+        customer = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", active = True, address_id=100)
+        customer.save()
+        self.assertEqual(customer.customer_id, 1)
+        # Change it an save it
+        customer.password = "DevOps is awesome"
+        customer.save()
+        self.assertEqual(customer.customer_id, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        customer = Customer.all()
+        self.assertEqual(len(customer), 1)
+        self.assertEqual(customer[0].password, "DevOps is awesome")
+
     def test_list_all_customers(self):
         """ Create two customers and add them to the database, then 
             obtain list of all customers and ensure it is = 2
@@ -181,12 +196,12 @@ class TestCustomers(unittest.TestCase):
         cust.save()
         data = cust.serialize()
         self.assertNotEqual(data, None)
-        self.assertIn('first name', data)
-        self.assertEqual(data['first name'], "Marry")
-        self.assertIn('last name', data)
-        self.assertEqual(data['last name'], "Wang")
-        self.assertIn('user id', data)
-        self.assertEqual(data['user id'], "marrywang")
+        self.assertIn('first_name', data)
+        self.assertEqual(data['first_name'], "Marry")
+        self.assertIn('last_name', data)
+        self.assertEqual(data['last_name'], "Wang")
+        self.assertIn('user_id', data)
+        self.assertEqual(data['user_id'], "marrywang")
 
     def test_deserialize_a_customer(self):
         """ Test deserialization of a customer """
@@ -224,8 +239,8 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(data['city'], "New York")
         self.assertIn('state', data)
         self.assertEqual(data['state'], "New York")
-        self.assertIn('zip code', data)
-        self.assertEqual(data['zip code'], "100")
+        self.assertIn('zip_code', data)
+        self.assertEqual(data['zip_code'], "100")
 
     def test_deserialize_an_address(self):
         """ Test deserialization of a customer """

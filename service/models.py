@@ -50,7 +50,7 @@ class Address(db.Model):
                 "apartment": self.apartment,
                 "city": self.city,
                 "state": self.state,
-                "zip code": self.zip_code}
+                "zip_code": self.zip_code}
 
     def deserialize(self, data):
         """
@@ -128,10 +128,18 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.customer_id,
-                "first name": self.first_name,
-                "last name": self.last_name,
-                "user id": self.user_id,
+        return {"customer_id": self.customer_id,
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "user_id": self.user_id,
+                "active": self.active,
+                "address": Address.find(self.address_id)}
+
+    def internal_serialize(self):
+        return {"first_name": self.first_name,
+                "last_name": self.last_name, 
+                "user_id": self.user_id,
+                "password": self.password,
                 "active": self.active,
                 "address": Address.find(self.address_id)}
 

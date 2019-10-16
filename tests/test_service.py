@@ -27,7 +27,7 @@ import logging
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
 from service.models import Customer, Address, DataValidationError, db
-from tests.customer_factory import CustomerFactory
+from tests.customer_factory import CustomerFactory, AddressFactory
 from service.service import app, init_db, initialize_logging
 
 #DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
@@ -61,3 +61,31 @@ class TestCustomerServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
+
+    def test_update_customer(self):
+        """ Update an existing Customer """
+        # create a customer to update
+        test_customer = CustomerFactory()
+        test_address = AddressFactory()
+        test_customer.save()
+        test_address.customer_id = test_customer.customer_id
+        test_address.save()
+        test_customer.address_id = test_address.id
+        test_customer.save()
+
+        print("******Before********")
+        print(test_customer)
+        # update the customer
+        test_customer.first_name = 'Cow'
+        print(test_customer.internal_serialize())
+        resp = self.app.put('/customers/{}'.format(test_customer.user_id),
+                            json=test_customer.internal_serialize(),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        print("******After********")
+        print(resp)
+
+        updated_customer = resp.get_json()
+        self.assertEqual(updated_customer['first_name'], 'Cow')
