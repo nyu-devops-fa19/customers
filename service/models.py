@@ -175,7 +175,7 @@ class Customer(db.Model):
                 "password": self.password,
                 "active": self.active}
 
-    def deserialize(self, data, active=True):
+    def deserialize(self, data):
         """
         Deserializes a Customer from a dictionary
 
@@ -187,7 +187,7 @@ class Customer(db.Model):
             self.last_name = data['last_name']
             self.user_id = data['user_id']
             self.password = data['password']
-            self.active = active
+            self.active = True
         except KeyError as error:
             raise DataValidationError('Invalid customer: missing ' + error.args[0])
         except TypeError as error:
