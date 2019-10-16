@@ -183,21 +183,30 @@ def create_customers():
 #     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
 # 
 # 
-# ######################################################################
-# # DELETE A PET
-# ######################################################################
-# @app.route('/pets/<int:pet_id>', methods=['DELETE'])
-# def delete_pets(pet_id):
-#     """
-#     Delete a Pet
-# 
-#     This endpoint will delete a Pet based the id specified in the path
-#     """
-#     app.logger.info('Request to delete pet with id: %s', pet_id)
-#     pet = Pet.find(pet_id)
-#     if pet:
-#         pet.delete()
-#     return make_response('', status.HTTP_204_NO_CONTENT)
+######################################################################
+# UPDATE A CUSTOMER
+######################################################################
+@app.route('/customers/<string:user_id>', methods=['PUT'])
+def update_customers(user_id):
+    """
+    Update a Customer
+    This endpoint will update a Customer based the body that is posted
+    """
+    app.logger.info('Request to update customer with id: %s', user_id)
+    check_content_type('application/json')
+    customers = Customer.find(user_id)
+    if not customers:
+        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+
+    cust = customers[0]
+    # customers_array = [cust.serialize() for cust in customers]
+    # cust = customers_array[0]
+
+
+    cust.deserialize(request.get_json())
+    cust.user_id = user_id
+    cust.save()
+    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
