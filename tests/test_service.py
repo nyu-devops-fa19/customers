@@ -24,10 +24,11 @@ Test cases can be run with the following:
 import unittest
 import os
 import logging
+import uuid
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
 from service.models import Customer, Address, DataValidationError, db
-from tests.customer_factory import CustomerFactory
+from tests.customer_factory import CustomerFactory, AddressFactory
 from service.service import app, init_db, initialize_logging
 
 #DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
@@ -61,3 +62,174 @@ class TestCustomerServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+
+    def _create_customers(self, count):
+        """ Factory method to create customers in bulk """
+        customers = []
+        for _ in range(count):
+            test_customer = CustomerFactory()
+            test_address = AddressFactory()
+            addr_json = test_address.serialize()
+            cust_json = test_customer.internal_serialize()
+            cust_json["address"] = addr_json
+            resp = self.app.post('/customers',
+                                 json=cust_json,
+                                 content_type='application/json')
+            self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test customer')
+            new_cust = resp.get_json()
+            test_customer.id = new_cust["customer_id"]
+            addr = new_cust["address"]
+            test_customer.address_id = addr["id"]
+            customers.append(test_customer)
+        return customers
+
+    def test_update_customer(self):
+        """ Update an existing Customer """
+        # create a customer to update
+        customers = self._create_customers(1)
+        test_customer = customers[0]
+        test_customer.first_name = 'Cow'
+        cust_json = test_customer.internal_serialize()
+        cust_json["address"] = Address.find(test_customer.address_id)
+        resp = self.app.put('/customers/{}'.format(test_customer.user_id),
+                            json=cust_json,
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_customer = resp.get_json()
+        self.assertEqual(updated_customer['first_name'], 'Cow')
+
+    def test_create_customer(self):
+        """create a new customer"""
+        body = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "user_id": "lukeyang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        resp = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get('Location', None)
+        self.assertTrue(location != None)
+        # Check the data is correct
+        new_customer = resp.get_json()
+        self.assertEqual(new_customer['first_name'], "Luke", "first_name do not match")
+        self.assertEqual(new_customer['last_name'], "Yang", "last_name do not match")
+        self.assertEqual(new_customer['user_id'], "lukeyang", "user_id do not match")
+        self.assertEqual(new_customer['active'], True, "active status not match")
+
+    def test_deactivate_customer(self):
+        """ Deactivate a customer """
+        # create a customer to deactivate
+        body = {
+            "first_name": "Peter",
+            "last_name": "Parker",
+            "user_id": "pparker",
+            "password": "withGreatPower",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_create = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp_create.get_json()['active'], True)
+
+        # deactivate the customer
+        resp_deactivate = self.app.put('/customers/pparker/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_deactivate.get_json()['active'], False)
+
+    def test_get_customer_list(self):
+        """ Get a list of Customers """
+        self._create_customers(5)
+        resp = self.app.get('/customers')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
+
+    def test_query_by_fname(self):
+        """ Query Customers by First Name """
+        customers = self._create_customers(10)
+        test_fname = customers[0].first_name
+        fname_customers = [cust for cust in customers if cust.first_name == test_fname]
+        resp = self.app.get('/customers',
+                            query_string='fname={}'.format(test_fname))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(fname_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['first_name'], test_fname)
+
+    def test_query_by_lname(self):
+        """ Query Customers by Last Name """
+        customers = self._create_customers(10)
+        test_lname = customers[0].last_name
+        lname_customers = [cust for cust in customers if cust.last_name == test_lname]
+        resp = self.app.get('/customers',
+                            query_string='lname={}'.format(test_lname))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(lname_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['last_name'], test_lname)
+
+    def test_query_by_city(self):
+        """ Query Customers by City """
+        customers = self._create_customers(10)
+        test_city = Address.find(customers[0].address_id)['city']
+        city_customers = [cust for cust in customers if Address.find(cust.address_id)['city'] == test_city]
+        resp = self.app.get('/customers',
+                            query_string='city={}'.format(test_city))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(city_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['address']['city'], test_city)
+
+    def test_query_by_state(self):
+        """ Query Customers by State """
+        customers = self._create_customers(10)
+        test_state = Address.find(customers[0].address_id)['state']
+        state_customers = [cust for cust in customers if Address.find(cust.address_id)['state'] == test_state]
+        resp = self.app.get('/customers',
+                            query_string='state={}'.format(test_state))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(state_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['address']['state'], test_state)
+
+    def test_query_by_zip(self):
+        """ Query Customers by Zip Code """
+        customers = self._create_customers(10)
+        test_zip = Address.find(customers[0].address_id)['zip_code']
+        zip_customers = [cust for cust in customers if Address.find(cust.address_id)['zip_code'] == test_zip]
+        resp = self.app.get('/customers',
+                            query_string='zip={}'.format(test_zip))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(zip_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['address']['zip_code'], test_zip)

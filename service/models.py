@@ -50,7 +50,7 @@ class Address(db.Model):
                 "apartment": self.apartment,
                 "city": self.city,
                 "state": self.state,
-                "zip code": self.zip_code}
+                "zip_code": self.zip_code}
 
     def deserialize(self, data):
         """
@@ -161,14 +161,21 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.customer_id,
-                "first name": self.first_name,
-                "last name": self.last_name,
-                "user id": self.user_id,
+        return {"customer_id": self.customer_id,
+                "first_name": self.first_name,
+                "last_name": self.last_name,
+                "user_id": self.user_id,
                 "active": self.active,
                 "address": Address.find(self.address_id)}
 
-    def deserialize(self, data):
+    def internal_serialize(self):
+        return {"first_name": self.first_name,
+                "last_name": self.last_name, 
+                "user_id": self.user_id,
+                "password": self.password,
+                "active": self.active}
+
+    def deserialize(self, data, active=True):
         """
         Deserializes a Customer from a dictionary
 
@@ -180,7 +187,7 @@ class Customer(db.Model):
             self.last_name = data['last_name']
             self.user_id = data['user_id']
             self.password = data['password']
-            self.active = True
+            self.active = active
         except KeyError as error:
             raise DataValidationError('Invalid customer: missing ' + error.args[0])
         except TypeError as error:
@@ -232,17 +239,6 @@ class Customer(db.Model):
         """
         cls.logger.info('Processing last name query for %s ...', l_name)
         return cls.query.filter(cls.last_name == l_name)
-
-    @classmethod
-    def find_by_status(cls, active=True):
-        """ Query that finds Customers by their active status """
-        """ Returns all Customers by their status
-
-        Args:
-            active (boolean): True for customers that are active
-        """
-        cls.logger.info('Processing active query for %s ...', active)
-        return cls.query.filter(cls.active == active)
     
     '''
     TODO: Add methods for save, delete, list and query operations here

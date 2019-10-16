@@ -1,14 +1,13 @@
-# cache folder
+# cache
+service/__pycache__/*
 __pycache__/
+*.pyc
 
 # log files
 *.log
 
 # Vagrant
 .vagrant
-
-# cache
-service/__pycache__/*
 
 # coverage report
 .coverage.*

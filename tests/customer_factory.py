@@ -18,20 +18,21 @@ Test Factory to make fake objects for testing
 import factory
 import string
 import random
+import uuid
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
 from service.models import Customer, Address
 
 class AddressFactory(factory.Factory):
-	""" Creates fake addresses that you don't have to feed """
-	class Meta:
-		model = Address
-	id = factory.Sequence(lambda n: n)
-	street = FuzzyText(random.randint(1,20))
-	apartment = FuzzyText(random.randint(1,20))
-	city = FuzzyText(random.randint(1,20))
-	state = FuzzyText(random.randint(1,20))
-	zip_code = FuzzyText(5, chars=string.digits)
-	customer_id = factory.Sequence(lambda n: n)
+    """ Creates fake addresses that you don't have to feed """
+    class Meta:
+        model = Address
+    id = factory.Sequence(lambda n: n)
+    street = FuzzyChoice(choices=["100 W 100 St.", "28-40 Jackson Ave"])
+    apartment = FuzzyChoice(["100", "45E"])
+    city = FuzzyChoice(["New York", "Chicago"])
+    state = FuzzyChoice(["NY", "IL"])
+    zip_code = FuzzyChoice(["11101", "68420"])
+    customer_id = factory.Sequence(lambda n: n)
 
 
 class CustomerFactory(factory.Factory):
@@ -39,14 +40,16 @@ class CustomerFactory(factory.Factory):
     class Meta:
         model = Customer
     customer_id = factory.Sequence(lambda n: n)
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    user_id = FuzzyText(random.randint(1,20))
-    password = FuzzyText(random.randint(1,20))
+    first_name = FuzzyChoice(["Marry", "Herry"])
+    last_name = FuzzyChoice(["Wang", "Trump"])
+    user_id = FuzzyText(uuid.uuid4().hex[:6])
+    password = FuzzyChoice(["dasfaguii", "pskfafdaf"])
     active = FuzzyChoice(choices=[True, False])
     address_id = factory.Sequence(lambda n: n)
 
 if __name__ == '__main__':
     for _ in range(10):
         customer = CustomerFactory()
+        address = AddressFactory()
         print(customer.serialize())
+        print(address.serialize())
