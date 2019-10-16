@@ -15,6 +15,7 @@ address - JSON containing:
 	state - String  
 	zip_code - String  
 For example:  
+```
 {  
     "first_name": "John",  
     "last_name": "Doe",  
@@ -28,6 +29,7 @@ For example:
         "zip_code": "22890"  
     }  
 }  
+```
 
 2. Read:
 * GET /customers/user_id  
