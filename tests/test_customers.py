@@ -152,9 +152,96 @@ class TestCustomers(unittest.TestCase):
             last_name="Doe", 
             user_id="johndoe", 
             password="Asdf@1234", 
-            active = True
+            active = True,
         )
         cust2.save()
         all_customers = Customer.all()
         self.assertEquals(len(all_customers), 2)
-        
+            
+    def test_serialize_a_customer(self):
+        """ Test serialization of a customer """
+        cust = Customer (
+            first_name="Marry", 
+            last_name="Wang", 
+            user_id="marrywang", 
+            password="password",
+            active=True,
+        )
+        cust.save()
+        addr = Address(
+            street="48 John St",
+            apartment="1B",
+            city="New York",
+            state="New York",
+            zip_code="22890",
+            customer_id=cust.customer_id,
+        )
+        addr.save()
+        cust.address_id=addr.id
+        cust.save()
+        data = cust.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn('first name', data)
+        self.assertEqual(data['first name'], "Marry")
+        self.assertIn('last name', data)
+        self.assertEqual(data['last name'], "Wang")
+        self.assertIn('user id', data)
+        self.assertEqual(data['user id'], "marrywang")
+
+    def test_deserialize_a_customer(self):
+        """ Test deserialization of a customer """
+        data = {
+            "first_name": "Marry", 
+            "last_name": "Wang",
+            "user_id": "marrywang", 
+            "password": "password"
+        }
+        cust = Customer()
+        cust.deserialize(data)
+        self.assertNotEqual(cust, None)
+        self.assertEqual(cust.customer_id, None)
+        self.assertEqual(cust.first_name, "Marry")
+        self.assertEqual(cust.last_name, "Wang")
+        self.assertEqual(cust.user_id, "marrywang")
+        self.assertEqual(cust.password, "password")
+    
+    def test_serialize_an_address(self):
+        """ Test serialization of a customer """
+        addr = Address (
+            street = "100 W 100 St.",
+            apartment = "100",
+            city = "New York",
+            state = "New York",
+            zip_code = "100"
+        )
+        data = addr.serialize()
+        self.assertNotEqual(data, None)
+        self.assertIn('street', data)
+        self.assertEqual(data['street'], "100 W 100 St.")
+        self.assertIn('apartment', data)
+        self.assertEqual(data['apartment'], "100")
+        self.assertIn('city', data)
+        self.assertEqual(data['city'], "New York")
+        self.assertIn('state', data)
+        self.assertEqual(data['state'], "New York")
+        self.assertIn('zip code', data)
+        self.assertEqual(data['zip code'], "100")
+
+    def test_deserialize_an_address(self):
+        """ Test deserialization of a customer """
+        data = {
+            "street": "100 W 100 St.",
+            "apartment": "100",
+            "city": "New York",
+            "state": "New York",
+            "zip_code": "100"
+        }
+        addr = Address()
+        addr.deserialize(data)
+        self.assertNotEqual(addr, None)
+        self.assertEqual(addr.customer_id, None)
+        self.assertEqual(addr.street, "100 W 100 St.")
+        self.assertEqual(addr.apartment, "100")
+        self.assertEqual(addr.city, "New York")
+        self.assertEqual(addr.state, "New York")
+        self.assertEqual(addr.zip_code, "100")
