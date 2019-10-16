@@ -109,7 +109,7 @@ def index():
 ######################################################################
 @app.route('/customers', methods=['GET'])
 def list_customers():
-    """ Returns all of the Pets """
+    """ Returns all of the Customers """
     app.logger.info('Request for customers list')
     customers = Customer.all()
     f_name = request.args.get('fname')
