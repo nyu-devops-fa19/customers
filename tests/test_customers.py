@@ -149,6 +149,24 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(len(customer), 1)
         self.assertEqual(customer[0].password, "DevOps is awesome")
 
+    def test_delete_a_customer(self):
+        """ Delete a customer """
+        customer = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", active = True)
+        customer.save()
+        address = Address(street = "100 W 100 St.", apartment = "100", city = "New York", state = "New York", zip_code = "100")
+        address.customer_id = customer.customer_id
+        address.save()
+        customer.address_id = address.id
+        customer.save()
+
+        self.assertEqual(len(Customer.all()), 1)
+        self.assertEqual(len(Address.all()), 1)
+        
+        # delete the customer and make sure it isn't in the database
+        customer.delete()
+        self.assertEqual(len(Customer.all()), 0)
+        self.assertEqual(len(Address.all()), 0)
+
     def test_list_all_customers(self):
         """ Create two customers and add them to the database, then 
             obtain list of all customers and ensure it is = 2
