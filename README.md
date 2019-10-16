@@ -72,3 +72,9 @@ zip - zip code of primary address (String)
 
 - **Activate**
 * PUT /customers/user_id/activate
+
+## Running the tests
+Run the tests using `nose`
+`nosetests`
+The code coverage tool in `nose` directly give the report:
+`coverage report -m`
