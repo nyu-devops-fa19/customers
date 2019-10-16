@@ -279,7 +279,7 @@ class Customer(db.Model):
 
     @classmethod
     def find(cls, user_id, filter_activate = True):
-        """ Finds a Customer by userID """
+        """ Finds a Customer by user_id """
         cls.logger.info('Processing lookup for id %s ...', user_id)
         if filter_activate:
             return cls.query.filter(cls.user_id == user_id and cls.active)
