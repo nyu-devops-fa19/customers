@@ -252,16 +252,6 @@ class Customer(db.Model):
         """
         cls.logger.info('Processing last name query for %s ...', l_name)
         return cls.query.filter(cls.last_name == l_name)
-    
-    '''
-    TODO: Add methods for save, delete, list and query operations here
-
-    def delete(self)
-        """ Removes a Pet from the data store """
-        Pet.logger.info('Deleting %s', self.name)
-        db.session.delete(self)
-        db.session.commit()
-    '''
 
     @classmethod
     def find_by_cust_id(cls, cust_id):
