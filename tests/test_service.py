@@ -62,7 +62,6 @@ class TestCustomerServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-
     def test_update_customer(self):
         """ Update an existing Customer """
         # create a customer to update
@@ -81,3 +80,44 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_customer = resp.get_json()
         self.assertEqual(updated_customer['first_name'], 'Cow')
+
+    def _create_customer(self):
+        """ create a customer for testing delete"""
+        test_customer = {
+            "first_name": "Luke",
+            "last_name": "Yang",
+            "user_id": "lukeyang",
+            "password": "password",
+            "address": {
+                "street": "100 W 100 St.",
+                "apartment": "100",
+                "city": "New York",
+                "state": "New York",
+                "zip_code": "100"
+            }
+        }
+        resp = self.app.post('/customers',
+                            json=test_customer,
+                            content_type='application/json')
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test customer')
+        new_customer = resp.get_json()
+
+        return new_customer
+
+    def test_delete_customer(self):
+        # create a customer to update
+        test_customer = self._create_customer()
+        """ Delete a Customer """
+        resp = self.app.delete('/customers/{}'.format(test_customer['user_id']),
+                               content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get('/customers/{}'.format(test_customer['user_id']),
+                            content_type='application/json')
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+
+

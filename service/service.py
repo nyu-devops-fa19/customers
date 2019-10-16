@@ -162,27 +162,25 @@ def create_customers():
                          {
                              'Location': location_url
                          })
-# ######################################################################
-# # UPDATE AN EXISTING PET
-# ######################################################################
-# @app.route('/pets/<int:pet_id>', methods=['PUT'])
-# def update_pets(pet_id):
-#     """
-#     Update a Pet
-# 
-#     This endpoint will update a Pet based the body that is posted
-#     """
-#     app.logger.info('Request to update pet with id: %s', pet_id)
-#     check_content_type('application/json')
-#     pet = Pet.find(pet_id)
-#     if not pet:
-#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-#     pet.deserialize(request.get_json())
-#     pet.id = pet_id
-#     pet.save()
-#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
-# 
-# 
+
+######################################################################
+# DELETE A CUSTOMER
+######################################################################
+@app.route('/customers/<string:user_id>', methods=['DELETE'])
+def delete_customers(user_id):
+
+    """
+    Delete a Customer
+ 
+    This endpoint will delete a Customer based the id specified in the path
+     """
+    app.logger.info('Request to delete customer with user_id: %s', user_id)
+    customer = Customer.find(user_id)
+    if customer:
+        cust = customer[0]
+        cust.delete()
+    return make_response('', status.HTTP_204_NO_CONTENT)
+
 ######################################################################
 # UPDATE A CUSTOMER
 ######################################################################
