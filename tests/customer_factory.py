@@ -18,6 +18,7 @@ Test Factory to make fake objects for testing
 import factory
 import string
 import random
+import uuid
 from factory.fuzzy import FuzzyChoice, FuzzyInteger, FuzzyText
 from service.models import Customer, Address
 
@@ -41,7 +42,7 @@ class CustomerFactory(factory.Factory):
     customer_id = factory.Sequence(lambda n: n)
     first_name = FuzzyChoice(["Marry", "Herry"])
     last_name = FuzzyChoice(["Wang", "Trump"])
-    user_id = FuzzyChoice(["jerry", "marrywang"])
+    user_id = FuzzyText(uuid.uuid4().hex[:6])
     password = FuzzyChoice(["dasfaguii", "pskfafdaf"])
     active = FuzzyChoice(choices=[True, False])
     address_id = factory.Sequence(lambda n: n)

@@ -92,8 +92,41 @@ class Address(db.Model):
         db.create_all()  # make our sqlalchemy tabless
 
     @classmethod
+    def find_by_city(cls, city):
+        """ Returns all addresses in the given city
+
+        Args:
+            city (string): the city of the Addresses you want to match
+        """
+        cls.logger.info('Processing city query for %s ...', city)
+        addresses = cls.query.filter(cls.city == city)
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
+    
+    @classmethod
+    def find_by_state(cls, state):
+        """ Returns all addresses in the given state
+
+        Args:
+            state (string): the state of the Addresses you want to match
+        """
+        cls.logger.info('Processing state query for %s ...', state)
+        addresses = cls.query.filter(cls.state == state)
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
+
+    @classmethod
+    def find_by_zip(cls, zip_code):
+        """ Returns all addresses in the given zip code
+
+        Args:
+            zip_code (string): the zip_code of the Customers you want to match
+        """
+        cls.logger.info('Processing zip query for %s ...', zip_code)
+        addresses = cls.query.filter(cls.zip_code == zip_code)
+        return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
+
+    @classmethod
     def find(cls, addr_id):
-        """ Finds a Customer by his ID """
+        """ Finds an address by its ID """
         cls.logger.info('Processing lookup for id %s ...', addr_id)
         return cls.query.get(addr_id).serialize()
 
@@ -153,8 +186,7 @@ class Customer(db.Model):
                 "last_name": self.last_name, 
                 "user_id": self.user_id,
                 "password": self.password,
-                "active": self.active,
-                "address": Address.find(self.address_id)}
+                "active": self.active}
 
     def deserialize(self, data):
         """
@@ -200,6 +232,33 @@ class Customer(db.Model):
         """ Returns all of the Customers in the database """
         cls.logger.info('Processing all Customers')
         return cls.query.all()
+
+    @classmethod
+    def find_by_first_name(cls, f_name):
+        """ Returns all of the Customers with the given first name
+
+        Args:
+            f_name (string): the first name of the Customers you want to match
+        """
+        cls.logger.info('Processing first name query for %s ...', f_name)
+        return cls.query.filter(cls.first_name == f_name)
+
+    @classmethod
+    def find_by_last_name(cls, l_name):
+        """ Returns all of the Customers with the given last name
+
+        Args:
+            l_name (string): the first name of the Customers you want to match
+        """
+        cls.logger.info('Processing last name query for %s ...', l_name)
+        return cls.query.filter(cls.last_name == l_name)
+
+    @classmethod
+    def find_by_cust_id(cls, cust_id):
+        """ Finds a Customer by it's customer ID """
+        cls.logger.info('Processing lookup for customer_id %s ...', cust_id)
+        active_customers = cls.query.filter(cls.customer_id == cust_id and cls.active)
+        return active_customers[0]
    
     def delete(self):
         """ Removes a Customer from the data store """
@@ -210,7 +269,7 @@ class Customer(db.Model):
 
     @classmethod
     def find(cls, user_id, filter_activate = True):
-        """ Finds a Customer by ID """
+        """ Finds a Customer by user_id """
         cls.logger.info('Processing lookup for id %s ...', user_id)
         if filter_activate:
             return cls.query.filter(cls.user_id == user_id and cls.active)
@@ -222,35 +281,4 @@ class Customer(db.Model):
         """ Find a Pet by it's id """
         cls.logger.info('Processing lookup or 404 for id %s ...', pet_id)
         return cls.query.get_or_404(pet_id)
-
-    @classmethod
-    def find_by_name(cls, name):
-        """ Returns all Pets with the given name
-
-        Args:
-            name (string): the name of the Pets you want to match
-        """
-        cls.logger.info('Processing name query for %s ...', name)
-        return cls.query.filter(cls.name == name)
-
-    @classmethod
-    def find_by_category(cls, category):
-        """ Returns all of the Pets in a category
-
-        Args:
-            category (string): the category of the Pets you want to match
-        """
-        cls.logger.info('Processing category query for %s ...', category)
-        return cls.query.filter(cls.category == category)
-
-    @classmethod
-    def find_by_availability(cls, available=True):
-        """ Query that finds Pets by their availability """
-        """ Returns all Pets by their availability
-
-        Args:
-            available (boolean): True for pets that are available
-        """
-        cls.logger.info('Processing available query for %s ...', available)
-        return cls.query.filter(cls.available == available)
     '''

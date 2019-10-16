@@ -109,10 +109,26 @@ def index():
 ######################################################################
 @app.route('/customers', methods=['GET'])
 def list_customers():
-    """ Returns all of the Pets """
+    """ Returns all of the Customers """
     app.logger.info('Request for customers list')
     customers = Customer.all()
-
+    f_name = request.args.get('fname')
+    l_name = request.args.get('lname')
+    city = request.args.get('city')
+    state = request.args.get('state')
+    zip_code = request.args.get('zip')
+    if f_name:
+        customers = Customer.find_by_first_name(f_name)
+    elif l_name:
+        customers = Customer.find_by_last_name(l_name)
+    elif city:
+        customers = Address.find_by_city(city)
+    elif state:
+        customers = Address.find_by_state(state)
+    elif zip_code:
+        customers = Address.find_by_zip(zip_code)
+    else:
+        customers = Customer.all()
     results = [cust.serialize() for cust in customers]
     return make_response(jsonify(results), status.HTTP_200_OK)
 
