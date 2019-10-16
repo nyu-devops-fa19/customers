@@ -12,7 +12,7 @@ cd /vagrant
 nosetests
 FLASK_APP=service:app flask run --host=0.0.0.0 --port=5000
 ```
-then on your own machine, visit: http://localhost:5000/
+Then on your own machine, you can see by visiting: http://localhost:5000/
 
 ## APIs routes
 - **Create** 
