@@ -128,7 +128,7 @@ class TestCustomerServer(unittest.TestCase):
         self.assertEqual(new_customer['active'], True, "active status not match")
 
     def test_deactivate_customer(self):
-        """ Deactivate a customer """
+        """ Deactivate an existing customer """
         # create a customer to deactivate
         body = {
             "first_name": "Peter",
@@ -233,3 +233,38 @@ class TestCustomerServer(unittest.TestCase):
         # check the data just to be sure
         for customer in data:
             self.assertEqual(customer['address']['zip_code'], test_zip)
+    def test_activate_customer(self):
+        """ Activate an existing customer """
+        # create a customer to activate
+        body = {
+            "first_name": "Gwen",
+            "last_name": "Stacy",
+            "user_id": "gstacy",
+            "password": "heyGuys",
+            "address": {
+                "street": "20 Ingram Street",
+                "apartment": "FL 2",
+                "city": "Flushing",
+                "state": "New York",
+                "zip_code": "11375"
+            }
+        }
+        resp_create = self.app.post('/customers',
+                             json=body,
+                             content_type='application/json')
+        self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(resp_create.get_json()['active'], True)
+
+        # deactivate the customer
+        resp_deactivate = self.app.put('/customers/gstacy/deactivate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_deactivate.get_json()['active'], False)
+
+        # activate the customer
+        resp_activate = self.app.put('/customers/gstacy/activate',
+                             json=body,
+                            content_type='application/json')
+        self.assertEqual(resp_activate.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp_activate.get_json()['active'], True)

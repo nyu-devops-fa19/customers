@@ -9,11 +9,10 @@ __pycache__/
 # Vagrant
 .vagrant
 
-# coverage report
+# coverage
 .coverage.*
-
-# .coverage
 .coverage
 
 #DS_Store
 .DS_Store
+cover/
