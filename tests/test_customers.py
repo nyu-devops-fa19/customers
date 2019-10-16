@@ -87,6 +87,7 @@ class TestCustomers(unittest.TestCase):
             city="New York",
             state="New York",
             zip_code="10035",
+            customer_id=1
         )
         self.assertTrue(addr != None)
         self.assertEqual(addr.id, None)
@@ -121,9 +122,9 @@ class TestCustomers(unittest.TestCase):
             state="New York",
             zip_code="10035",
         )
+        addr.customer_id = cust.customer_id
         addr.save()
         cust.address_id = addr.id
-        addr.customer_id = cust.customer_id
          # Asert that it was assigned an id and shows up in the database
         self.assertEqual(addr.id, 1)
         custs = Customer.all()
@@ -134,4 +135,26 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(len(custs), 1)
 
     def test_list_all_customers(self):
+        """ Create two customers and add them to the database, then 
+            obtain list of all customers and ensure it is = 2
+        """
+        cust1 = Customer (
+            first_name="Jane", 
+            last_name="Doe", 
+            user_id="janedoe", 
+            password="Asdf@1234", 
+            active = True
+        )
+        cust1.save()
+
+        cust2 = Customer (
+            first_name="John", 
+            last_name="Doe", 
+            user_id="johndoe", 
+            password="Asdf@1234", 
+            active = True
+        )
+        cust2.save()
+        all_customers = Customer.all()
+        self.assertEquals(len(all_customers), 2)
         
