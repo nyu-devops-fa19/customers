@@ -10,5 +10,8 @@ __pycache__/
 # cache
 service/__pycache__/*
 
+# coverage report
+.coverage.*
+
 # .coverage
 .coverage
