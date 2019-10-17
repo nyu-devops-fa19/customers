@@ -100,6 +100,13 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.post('/customers', json=body, content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_cust_not_found_404(self):
+        """ Test retrieving a Customer that does not exist"""
+        customers = self._create_customers(1)
+        resp = self.app.get('/customers/{}'.format("xyz"),
+                            content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_create_customer(self):
         """create a new customer"""
         body = {
@@ -189,7 +196,7 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.get('/customers/{}'.format(test_customer['user_id']),
                             content_type='application/json')
 
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_deactivate_customer(self):
         """ Deactivate an existing customer """
