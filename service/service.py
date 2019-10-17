@@ -139,7 +139,6 @@ def list_customers():
 def get_customers(user_id):
     """
     Retrieve a single customer
-
     This endpoint will return a Customer based on user_id
     """
     app.logger.info('Request for customer with user_id: %s', user_id)
@@ -188,9 +187,8 @@ def delete_customers(user_id):
 
     """
     Delete a Customer
-
     This endpoint will delete a Customer based the id specified in the path
-     """
+    """
     app.logger.info('Request to delete customer with user_id: %s', user_id)
     customer = Customer.find(user_id)
     if customer:
