@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO: Modify below according to RESTful APIs of customers
 """
 Paths:
 ------
-GET /pets - Returns a list all of the Pets
-GET /pets/{id} - Returns the Pet with a given id number
-POST /pets - creates a new Pet record in the database
-PUT /pets/{id} - updates a Pet record in the database
-DELETE /pets/{id} - deletes a Pet record in the database
+GET /customers - returns a list all of the Customers
+GET /customers/{user_id} - returns the Customer with a given user_id
+POST /customers - creates a new Customer record in the database
+PUT /customers/{user_id} - updates a Customer record in the database
+DELETE /customers/{user_id} - deletes a Customer record in the database
 PUT /customers/{user_id}/deactivate - deactivates a Customer record in the database
+PUT /customers/{user_id}/activate - activates a Customer record in the database
 """
 
 import os
@@ -140,7 +140,7 @@ def get_customers(user_id):
     """
     Retrieve a single customer
 
-    This endpoint will return a Customer based on it's id
+    This endpoint will return a Customer based on user_id
     """
     app.logger.info('Request for customer with user_id: %s', user_id)
     cust = Customer.find(user_id)
@@ -188,7 +188,7 @@ def delete_customers(user_id):
 
     """
     Delete a Customer
- 
+
     This endpoint will delete a Customer based the id specified in the path
      """
     app.logger.info('Request to delete customer with user_id: %s', user_id)
