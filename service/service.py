@@ -146,6 +146,8 @@ def get_customers(user_id):
     if not cust:
         raise NotFound("Customer with user_id '{}' was not found.".format(user_id))
     result = [customer.serialize() for customer in cust]
+    if len(result) == 0:
+        return make_response(jsonify(error="Customer not found"), status.HTTP_404_NOT_FOUND)
     return make_response(jsonify(result), status.HTTP_200_OK)
 
 ######################################################################
