@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/nyu-devops-fa19/customers.svg?branch=master)](https://travis-ci.org/nyu-devops-fa19/customers)
+[![codecov](https://codecov.io/gh/nyu-devops-fa19/customers/branch/master/graph/badge.svg)](https://codecov.io/gh/nyu-devops-fa19/customers)
+
 # Customers
 
 ## Description
