@@ -80,6 +80,8 @@ class TestCustomerServer(unittest.TestCase):
             test_customer.id = new_cust["customer_id"]
             addr = new_cust["address"]
             test_customer.address_id = addr["id"]
+            self.assertEqual(test_customer.id, new_cust["customer_id"], "customer_id do not match")
+            self.assertEqual(test_customer.address_id, addr["id"], "address_id do not match")
             customers.append(test_customer)
         return customers
 
@@ -106,6 +108,7 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.get('/customers/{}'.format("xyz"),
                             content_type='application/json')
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
 
     def test_create_customer(self):
         """create a new customer"""
