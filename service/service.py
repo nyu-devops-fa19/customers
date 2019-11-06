@@ -235,7 +235,6 @@ def deactivate_customers(user_id):
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
-    cust.deserialize(request.get_json())
     cust.user_id = user_id
     cust.active = False
     cust.save()
@@ -257,7 +256,6 @@ def activate_customers(user_id):
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
-    cust.deserialize(request.get_json())
     cust.user_id = user_id
     cust.active = True
     cust.save()
