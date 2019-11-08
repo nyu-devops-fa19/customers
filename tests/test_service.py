@@ -359,7 +359,7 @@ class TestCustomerServer(unittest.TestCase):
         resp_deactivate = self.app.put('/customers/bwayne/deactivate',
                              json=body,
                             content_type='application/json')
-        self.assertEqual(resp_deactivate.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(resp_deactivate.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_activate_customer_not_found(self):
         """ Activate a non-existing customer """
@@ -379,7 +379,7 @@ class TestCustomerServer(unittest.TestCase):
         resp_activate = self.app.put('/customers/bwayne/activate',
                              json=body,
                             content_type='application/json')
-        self.assertEqual(resp_activate.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(resp_activate.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_customer_not_found(self):
         """ Update a non-existing Customer """
