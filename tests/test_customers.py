@@ -238,21 +238,6 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(cust.user_id, "marrywang")
         self.assertEqual(cust.password, "password")
 
-    def test_deserialize_customer_type_error(self):
-        """ Test customer deserialization from wrong data type """
-        data = {
-            "first_name": "Marry",
-            "last_name": 2.7,
-            "user_id": "marrywang",
-            "password": True
-        }
-        cust = Customer()
-        cust.deserialize(data)
-        with self.assertRaises(DataValidationError) as error:
-            cust.deserialize(data)
-        self.assertEqual(str(error.exception),
-            'Invalid address: body of request contained bad or no data')
-
     def test_serialize_an_address(self):
         """ Test serialization of a customer """
         addr = Address (
@@ -270,8 +255,8 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(data['apartment'], "100")
         self.assertIn('city', data)
         self.assertEqual(data['city'], "New York")
-        self.assertIn('state', data)
         self.assertEqual(data['state'], "New York")
+        self.assertIn('state', data)
         self.assertIn('zip_code', data)
         self.assertEqual(data['zip_code'], "100")
 
@@ -307,21 +292,6 @@ class TestCustomers(unittest.TestCase):
             addr.deserialize(data)
         self.assertEqual(str(error.exception), 'Invalid address: '\
                          'missing city')
-
-    def test_deserialize_address_type_error(self):
-        """ Test address deserialization from wrong data type """
-        data = {
-            "street": "100 W 100 St.",
-            "apartment": "100",
-            "city": "New York",
-            "state": "New York",
-            "zip_code": None
-        }
-        addr = Address()
-        with self.assertRaises(DataValidationError) as error:
-            addr.deserialize(data)
-        self.assertEqual(str(error.exception),
-            'Invalid address: body of request contained bad or no data')
 
     def test_find_customer(self):
         """ Find active/inactive customers with filter """
