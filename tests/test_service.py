@@ -29,7 +29,7 @@ from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
 from service.models import Customer, Address, DataValidationError, db
 from tests.customer_factory import CustomerFactory, AddressFactory
-from service.service import app, init_db, initialize_logging
+from service.service import app, init_db, initialize_logging, internal_server_error
 
 #DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost:5432/postgres')
@@ -235,6 +235,21 @@ class TestCustomerServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 5)
 
+    def test_get_by_user_id(self):
+        """ Get customer by user_id """
+        customers = self._create_customers(10)
+        test_user_id = customers[0].user_id
+        user_id_customers = [cust for cust in customers if cust.user_id == test_user_id]
+        resp = self.app.get('/customers/{}'.format(test_user_id),
+                            content_type='application/json')
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(user_id_customers))
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer['user_id'], test_user_id)
+
     def test_query_by_fname(self):
         """ Query Customers by First Name """
         customers = self._create_customers(10)
@@ -399,7 +414,7 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.put('/customers/bwayne',
                             json=body,
                             content_type='application/json')
-        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_invalid_content_type(self):
         """ Invalid content type """
@@ -420,6 +435,26 @@ class TestCustomerServer(unittest.TestCase):
                             json=body,
                             content_type='text/plain')
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_root_index(self):
+        """ Test root index result """
+        resp = self.app.get('/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['name'], 'Customers REST API Service')
+        self.assertEqual(data['version'], '1.0')
+
+    @patch('service.models.Customer.delete')
+    def test_internal_server_error_500(self, request_mock):
+        """ Internal server error """
+        request_mock.delete.side_effect = internal_server_error("error")
+        resp = self.app.delete('/customers/JoJo')
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_invalid_method_request_405(self):
+        """ Method not supported error """
+        resp = self.app.delete('/customers', content_type='application/json')
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_create_customer_415(self):
         """ Test creating a customer with unsupported content type """

@@ -143,8 +143,6 @@ def get_customers(user_id):
     """
     app.logger.info('Request for customer with user_id: %s', user_id)
     cust = Customer.find(user_id)
-    if not cust:
-        raise NotFound("Customer with user_id '{}' was not found.".format(user_id))
     result = [customer.serialize() for customer in cust]
     if len(result) == 0:
         return make_response(jsonify(error="Customer not found"), status.HTTP_404_NOT_FOUND)
@@ -210,7 +208,7 @@ def update_customers(user_id):
     app.logger.info('Request to update customer with id: %s', user_id)
     check_content_type('application/json')
     customers = Customer.find(user_id)
-    if not customers:
+    if customers.count() == 0:
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
