@@ -8,12 +8,12 @@ services:
 # command to install dependencies
 install: "pip3 install -r requirements.txt"
 
-env:
-  global:
-  - DATABASE_URI='postgres://postgres:@localhost:5432/testdb'
+# env:
+#   global:
+#   - DATABASE_URI='postgres://postgres:@localhost:5432/testdb'
 
-before_script:
-  - psql -c 'create database testdb;' -U postgres
+# before_script:
+#   - psql -c 'create database testdb;' -U postgres
 
 # command to run tests
 script: nosetests
