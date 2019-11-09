@@ -231,11 +231,10 @@ def deactivate_customers(user_id):
     app.logger.info('Request to deactivate customer with id: %s', user_id)
     check_content_type('application/json')
     customers = Customer.find(user_id)
-    if not customers:
+    if customers.count() == 0:
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
-    cust.deserialize(request.get_json())
     cust.user_id = user_id
     cust.active = False
     cust.save()
@@ -253,11 +252,10 @@ def activate_customers(user_id):
     app.logger.info('Request to activate customer with id: %s', user_id)
     check_content_type('application/json')
     customers = Customer.find(user_id, False)
-    if not customers:
+    if customers.count() == 0:
         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
     cust = customers[0]
-    cust.deserialize(request.get_json())
     cust.user_id = user_id
     cust.active = True
     cust.save()

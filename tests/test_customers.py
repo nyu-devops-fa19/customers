@@ -25,6 +25,9 @@ import os
 from werkzeug.exceptions import NotFound
 from service.models import Customer, Address, DataValidationError, db
 from service import app
+import urllib.parse as up
+import psycopg2
+
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost:5432/postgres')
 

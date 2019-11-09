@@ -24,8 +24,8 @@ import logging
 from flask import Flask
 
 # Get configuration from environment
-DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
-SECRET_KEY = os.getenv('SECRET_KEY', 's3cr3t-key-shhhh')
+DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://kaduggcb:gpQMYdecpWx8MBHZoOM8Fs_pgOP7npKI@salt.db.elephantsql.com:5432/kaduggcb')
+SECRET_KEY = os.getenv('SECRET_KEY', 'e7389fb4-1d3d-4b76-98d7-11b4420b5282')
 
 # Create Flask application
 app = Flask(__name__)
