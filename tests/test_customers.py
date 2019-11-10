@@ -65,10 +65,10 @@ class TestCustomers(unittest.TestCase):
 		    #     zip_code= "100",
         # )
         cust = Customer (
-            first_name="Marry", 
-            last_name="Wang", 
-            user_id="marrywang", 
-            password="password", 
+            first_name="Marry",
+            last_name="Wang",
+            user_id="marrywang",
+            password="password",
             address_id="100",
         )
         self.assertTrue(cust != None)
@@ -97,22 +97,22 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(addr.zip_code, "10035")
 
     def test_add_a_customer(self):
-        """ Create a address and add it to the database, then 
-        create a customer with the address.id and add it to the database 
+        """ Create a address and add it to the database, then
+        create a customer with the address.id and add it to the database
         """
         custs = Customer.all()
         self.assertEqual(custs, [])
         cust = Customer (
-            first_name="Marry", 
-            last_name="Wang", 
-            user_id="marrywang", 
-            password="password", 
+            first_name="Marry",
+            last_name="Wang",
+            user_id="marrywang",
+            password="password",
             active = True
         )
         self.assertTrue(cust != None)
         self.assertEqual(cust.customer_id, None)
         self.assertEqual(cust.address_id, None)
-        
+
         cust.save()
 
         addr = Address (
@@ -161,42 +161,42 @@ class TestCustomers(unittest.TestCase):
 
         self.assertEqual(len(Customer.all()), 1)
         self.assertEqual(len(Address.all()), 1)
-        
+
         # delete the customer and make sure it isn't in the database
         customer.delete()
         self.assertEqual(len(Customer.all()), 0)
         self.assertEqual(len(Address.all()), 0)
 
     def test_list_all_customers(self):
-        """ Create two customers and add them to the database, then 
+        """ Create two customers and add them to the database, then
             obtain list of all customers and ensure it is = 2
         """
         cust1 = Customer (
-            first_name="Jane", 
-            last_name="Doe", 
-            user_id="janedoe", 
-            password="Asdf@1234", 
+            first_name="Jane",
+            last_name="Doe",
+            user_id="janedoe",
+            password="Asdf@1234",
             active = True
         )
         cust1.save()
 
         cust2 = Customer (
-            first_name="John", 
-            last_name="Doe", 
-            user_id="johndoe", 
-            password="Asdf@1234", 
+            first_name="John",
+            last_name="Doe",
+            user_id="johndoe",
+            password="Asdf@1234",
             active = True,
         )
         cust2.save()
         all_customers = Customer.all()
         self.assertEquals(len(all_customers), 2)
-            
+
     def test_serialize_a_customer(self):
         """ Test serialization of a customer """
         cust = Customer (
-            first_name="Marry", 
-            last_name="Wang", 
-            user_id="marrywang", 
+            first_name="Marry",
+            last_name="Wang",
+            user_id="marrywang",
             password="password",
             active=True,
         )
@@ -224,9 +224,9 @@ class TestCustomers(unittest.TestCase):
     def test_deserialize_a_customer(self):
         """ Test deserialization of a customer """
         data = {
-            "first_name": "Marry", 
+            "first_name": "Marry",
             "last_name": "Wang",
-            "user_id": "marrywang", 
+            "user_id": "marrywang",
             "password": "password"
         }
         cust = Customer()
@@ -237,7 +237,7 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(cust.last_name, "Wang")
         self.assertEqual(cust.user_id, "marrywang")
         self.assertEqual(cust.password, "password")
-    
+
     def test_serialize_an_address(self):
         """ Test serialization of a customer """
         addr = Address (
@@ -255,8 +255,8 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(data['apartment'], "100")
         self.assertIn('city', data)
         self.assertEqual(data['city'], "New York")
-        self.assertIn('state', data)
         self.assertEqual(data['state'], "New York")
+        self.assertIn('state', data)
         self.assertIn('zip_code', data)
         self.assertEqual(data['zip_code'], "100")
 
@@ -278,6 +278,20 @@ class TestCustomers(unittest.TestCase):
         self.assertEqual(addr.city, "New York")
         self.assertEqual(addr.state, "New York")
         self.assertEqual(addr.zip_code, "100")
+
+    def test_deserialize_address_key_error(self):
+        """ Test address deserialization from incomplete data """
+        data = {
+            "street": "100 W 100 St.",
+            "apartment": "100",
+            "state": "New York",
+            "zip_code": "100"
+        }
+        addr = Address()
+        with self.assertRaises(DataValidationError) as error:
+            addr.deserialize(data)
+        self.assertEqual(str(error.exception), 'Invalid address: '\
+                         'missing city')
 
     def test_find_customer(self):
         """ Find active/inactive customers with filter """

@@ -67,9 +67,6 @@ class Address(db.Model):
             self.zip_code = data['zip_code']
         except KeyError as error:
             raise DataValidationError('Invalid address: missing ' + error.args[0])
-        except TypeError as error:
-            raise DataValidationError('Invalid address: body of request contained' \
-                                      'bad or no data')
         return self
 
     def save(self):
@@ -101,7 +98,7 @@ class Address(db.Model):
         cls.logger.info('Processing city query for %s ...', city)
         addresses = cls.query.filter(cls.city == city)
         return [Customer.find_by_cust_id(addr.customer_id) for addr in addresses]
-    
+
     @classmethod
     def find_by_state(cls, state):
         """ Returns all addresses in the given state
@@ -183,7 +180,7 @@ class Customer(db.Model):
     def internal_serialize(self):
         """ Internal_serializes a Customer into a dictionary """
         return {"first_name": self.first_name,
-                "last_name": self.last_name, 
+                "last_name": self.last_name,
                 "user_id": self.user_id,
                 "password": self.password,
                 "active": self.active}
@@ -203,9 +200,6 @@ class Customer(db.Model):
             self.active = True
         except KeyError as error:
             raise DataValidationError('Invalid customer: missing ' + error.args[0])
-        except TypeError as error:
-            raise DataValidationError('Invalid customer: body of request contained' \
-                'bad or no data')
         return self
 
     @classmethod
@@ -259,7 +253,7 @@ class Customer(db.Model):
         cls.logger.info('Processing lookup for customer_id %s ...', cust_id)
         active_customers = cls.query.filter(cls.customer_id == cust_id and cls.active)
         return active_customers[0]
-   
+
     def delete(self):
         """ Removes a Customer from the data store """
         Customer.logger.info('Deleting %s %s', self.first_name, self.last_name)
