@@ -39,16 +39,20 @@ class TestCustomers(unittest.TestCase):
         """ These run once per Test suite """
         app.debug = False
         # Set up the test database
-        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        if DATABASE_URI:
+            app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        db.drop_all()   # clean before all tests
         Customer.init_db(app)
         Address.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        db.drop_all()   # clean up after the last test
+        db.session.remove() # disconnect from database
+        #pass
 
     def setUp(self):
-        db.drop_all()    # clean up the last tests
+        #db.drop_all()    # clean up the last tests
         db.create_all()  # make our sqlalchemy tables
 
     def tearDown(self):
