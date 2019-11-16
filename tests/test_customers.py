@@ -26,7 +26,7 @@ from werkzeug.exceptions import NotFound
 from service.models import Customer, Address, DataValidationError, db
 from service import app
 
-DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:passw0rd@localhost:5432/postgres')
+DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
 
 ######################################################################
 #  T E S T   C A S E S
@@ -40,14 +40,14 @@ class TestCustomers(unittest.TestCase):
         app.debug = False
         # Set up the test database
         app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        Customer.init_db(app)
+        Address.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
         pass
 
     def setUp(self):
-        Customer.init_db(app)
-        Address.init_db(app)
         db.drop_all()    # clean up the last tests
         db.create_all()  # make our sqlalchemy tables
 
