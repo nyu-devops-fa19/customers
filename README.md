@@ -7,9 +7,9 @@
 customer squads of a e-commerce website
 
 ## PostgreSQL
-Name: yazjsysy
-Password: vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab
-URL: postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy
+Name: yazjsysy  
+Password: vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab  
+URL: postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy  
 API Key: aafb0461-29be-4699-bac2-d1017ae79cf9
 
 ## To run the Flask app 
