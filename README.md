@@ -6,7 +6,7 @@
 ## Description
 customer squads of a e-commerce website
 
-## PostgreSQL
+## PostgreSQL(from ElephantSQL.com)
 Name: yazjsysy  
 Password: vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab  
 URL: postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy  
