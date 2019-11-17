@@ -6,8 +6,8 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        console.log("update_form_data: res try")
-        console.log(res)
+        // console.log("update_form_data: res try")
+        // console.log(res)
         addr = res.address;
         $("#user_id").val(res.user_id);
         $("#first_name").val(res.first_name);
