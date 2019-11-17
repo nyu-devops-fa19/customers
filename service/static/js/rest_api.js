@@ -6,21 +6,31 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
-        } else {
-            $("#pet_available").val("false");
-        }
+        // console.log("update_form_data: res try")
+        // console.log(res)
+        addr = res.address;
+        $("#user_id").val(res.user_id);
+        $("#first_name").val(res.first_name);
+        $("#last_name").val(res.last_name);
+        $("#street").val(addr.street);
+        $("#apartment").val(addr.apartment);
+        $("#city").val(addr.city);
+        $("#state").val(addr.state);
+        $("#zip_code").val(addr.zip_code);
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
+        $("#user_id").val("");
+        $("#first_name").val("");
+        $("#last_name").val("");
+        $("#password").val("");
+
+        $("#street").val("");
+        $("#apartment").val("");
+        $("#city").val("");
+        $("#state").val("");
+        $("#zip_code").val("");
     }
 
     // Updates the flash message area
@@ -30,24 +40,46 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a Customer
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        // get user info from the ui
+        var user_id = $("#user_id").val();
+        var first_name = $("#first_name").val();
+        var last_name = $("#last_name").val();
+        var password = $("#password").val();
 
+        // get address from the ui
+        var street = $("#street").val();
+        var apartment = $("#apartment").val();
+        var city = $("#city").val();
+        var state = $("#state").val();
+        var zip_code = $("#zip_code").val();
+
+        // create address obj
+        var address = {
+            "street": street,
+            "apartment": apartment,
+            "city": city,
+            "state": state,
+            "zip_code": zip_code
+        }
+
+        // create data obj
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "user_id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "password": password,
+            "address": address
         };
 
+        // send it to the backend
         var ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/customers",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -99,23 +131,23 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a Customer
     // ****************************************
 
     $("#retrieve-btn").click(function () {
-
-        var pet_id = $("#pet_id").val();
-
+        console.log("retrieve-btn.click")
+        var user_id = $("#user_id").val();
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets/" + pet_id,
+            url: "/customers/" + user_id,
             contentType: "application/json",
             data: ''
         })
 
         ajax.done(function(res){
-            //alert(res.toSource())
-            update_form_data(res)
+            console.log("retrieve-btn.click: res")
+            console.log(res)
+            update_form_data(res[0])
             flash_message("Success")
         });
 
