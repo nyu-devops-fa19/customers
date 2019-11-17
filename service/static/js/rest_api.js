@@ -12,7 +12,6 @@ $(function () {
         $("#user_id").val(res.user_id);
         $("#first_name").val(res.first_name);
         $("#last_name").val(res.last_name);
-        // $("#password").val(res.category);
         $("#street").val(addr.street);
         $("#apartment").val(addr.apartment);
         $("#city").val(addr.city);
