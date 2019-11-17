@@ -6,21 +6,29 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
-        } else {
-            $("#pet_available").val("false");
-        }
+        $("#user_id").val(res.user_id);
+        $("#first_name").val(res.first_name);
+        $("#last_name").val(res.first_name);
+        // $("#password").val(res.category);
+        $("#street").val(res.street);
+        $("#apartment").val(res.apartment);
+        $("#city").val(res.city);
+        $("#state").val(res.state);
+        $("#zip_code").val(res.zip_code);
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
+        $("#user_id").val("");
+        $("#first_name").val("");
+        $("#last_name").val("");
+        $("#password").val("");
+
+        $("#street").val("");
+        $("#apartment").val("");
+        $("#city").val("");
+        $("#state").val("");
+        $("#zip_code").val("");
     }
 
     // Updates the flash message area
@@ -36,6 +44,7 @@ $(function () {
     $("#create-btn").click(function () {
 
         // get user info from the ui
+        var user_id = $("#user_id").val();
         var first_name = $("#first_name").val();
         var last_name = $("#last_name").val();
         var password = $("#password").val();
@@ -58,6 +67,7 @@ $(function () {
 
         // create data obj
         var data = {
+            "user_id": user_id,
             "first_name": first_name,
             "last_name": last_name,
             "password": password,
@@ -119,16 +129,14 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve a Customer
     // ****************************************
 
     $("#retrieve-btn").click(function () {
-
-        var pet_id = $("#pet_id").val();
-
+        var user_id = $("#user_id").val();
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets/" + pet_id,
+            url: "/customers/" + user_id,
             contentType: "application/json",
             data: ''
         })
