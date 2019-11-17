@@ -6,15 +6,18 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
+        console.log("update_form_data: res try")
+        console.log(res)
+        addr = res.address;
         $("#user_id").val(res.user_id);
         $("#first_name").val(res.first_name);
-        $("#last_name").val(res.first_name);
+        $("#last_name").val(res.last_name);
         // $("#password").val(res.category);
-        $("#street").val(res.street);
-        $("#apartment").val(res.apartment);
-        $("#city").val(res.city);
-        $("#state").val(res.state);
-        $("#zip_code").val(res.zip_code);
+        $("#street").val(addr.street);
+        $("#apartment").val(addr.apartment);
+        $("#city").val(addr.city);
+        $("#state").val(addr.state);
+        $("#zip_code").val(addr.zip_code);
     }
 
     /// Clears all form fields
@@ -133,6 +136,7 @@ $(function () {
     // ****************************************
 
     $("#retrieve-btn").click(function () {
+        console.log("retrieve-btn.click")
         var user_id = $("#user_id").val();
         var ajax = $.ajax({
             type: "GET",
@@ -142,8 +146,9 @@ $(function () {
         })
 
         ajax.done(function(res){
-            //alert(res.toSource())
-            update_form_data(res)
+            console.log("retrieve-btn.click: res")
+            console.log(res)
+            update_form_data(res[0])
             flash_message("Success")
         });
 
