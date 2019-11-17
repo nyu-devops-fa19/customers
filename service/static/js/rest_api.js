@@ -30,24 +30,44 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create a Customer
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        // get user info from the ui
+        var first_name = $("#first_name").val();
+        var last_name = $("#last_name").val();
+        var password = $("#password").val();
 
+        // get address from the ui
+        var street = $("#street").val();
+        var apartment = $("#apartment").val();
+        var city = $("#city").val();
+        var state = $("#state").val();
+        var zip_code = $("#zip_code").val();
+
+        // create address obj
+        var address = {
+            "street": street,
+            "apartment": apartment,
+            "city": city,
+            "state": state,
+            "zip_code": zip_code
+        }
+
+        // create data obj
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "first_name": first_name,
+            "last_name": last_name,
+            "password": password,
+            "address": address
         };
 
+        // send it to the backend
         var ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/customers",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
