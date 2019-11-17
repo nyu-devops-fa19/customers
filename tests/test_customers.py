@@ -49,10 +49,8 @@ class TestCustomers(unittest.TestCase):
     def tearDownClass(cls):
         db.drop_all()   # clean up after the last test
         db.session.remove() # disconnect from database
-        #pass
 
     def setUp(self):
-        #db.drop_all()    # clean up the last tests
         db.create_all()  # make our sqlalchemy tables
 
     def tearDown(self):

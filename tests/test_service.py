@@ -55,11 +55,9 @@ class TestCustomerServer(unittest.TestCase):
     def tearDownClass(cls):
         db.drop_all()   # clean up after the last test
         db.session.remove() # disconnect from database
-        #pass
 
     def setUp(self):
         """ Runs before each test """
-        #db.drop_all()    # clean up the last tests
         db.create_all()  # create new tables
         self.app = app.test_client()
 
