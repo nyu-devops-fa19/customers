@@ -440,9 +440,7 @@ class TestCustomerServer(unittest.TestCase):
         """ Test root index result """
         resp = self.app.get('/')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data['name'], 'Customers REST API Service')
-        self.assertEqual(data['version'], '1.0')
+        self.assertIn(b'Customer RESTful Service', resp.data)
 
     @patch('service.models.Customer.delete')
     def test_internal_server_error_500(self, request_mock):
