@@ -46,16 +46,18 @@ class TestCustomerServer(unittest.TestCase):
         app.debug = False
         initialize_logging(logging.INFO)
         # Set up the test database
-        app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        if DATABASE_URI:
+            app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+        db.drop_all()   # clean before all tests
         init_db()
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        db.drop_all()   # clean up after the last test
+        db.session.remove() # disconnect from database
 
     def setUp(self):
         """ Runs before each test """
-        db.drop_all()    # clean up the last tests
         db.create_all()  # create new tables
         self.app = app.test_client()
 
