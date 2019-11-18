@@ -250,35 +250,51 @@ $(function () {
     // Search for a Pet
     // ****************************************
 
-    $("#search-btn").click(function () {
+    $("#retrieve-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var fname = $("#first_name").val();
+        var lname = $("#last_name").val();
+        var city = $("#city").val();
+        var state = $("#state").val();
+        var zip = $("#zip").val();
 
         var queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
+        if (fname) {
+            queryString += 'first_name=' + fname
         }
-        if (category) {
+        if (lname) {
             if (queryString.length > 0) {
-                queryString += '&category=' + category
+                queryString += '&last_name=' + lname
             } else {
-                queryString += 'category=' + category
+                queryString += 'last_name=' + lname
             }
         }
-        if (available) {
+        if (city) {
             if (queryString.length > 0) {
-                queryString += '&available=' + available
+                queryString += '&city=' + city
             } else {
-                queryString += 'available=' + available
+                queryString += 'city=' + city
+            }
+        }
+        if (state) {
+            if (queryString.length > 0) {
+                queryString += '&state=' + state
+            } else {
+                queryString += 'state=' + state
+            }
+        }
+        if (zip) {
+            if (queryString.length > 0) {
+                queryString += '&zip=' + zip
+            } else {
+                queryString += 'zip=' + zip
             }
         }
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets?" + queryString,
+            url: "/customers?" + queryString,
             contentType: "application/json",
             data: ''
         })
@@ -289,25 +305,28 @@ $(function () {
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
             header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">Name</th>'
-            header += '<th style="width:40%">Category</th>'
-            header += '<th style="width:10%">Available</th></tr>'
+            header += '<th style="width:40%">User Name</th>'
+            header += '<th style="width:40%">First Name</th>'
+            header += '<th style="width:10%">Last Name</th>'
+            header += '<th style="width:10%">Address</th></tr>'
             $("#search_results").append(header);
-            var firstPet = "";
+            var firstCust = "";
             for(var i = 0; i < res.length; i++) {
-                var pet = res[i];
-                var row = "<tr><td>"+pet._id+"</td><td>"+pet.name+"</td><td>"+pet.category+"</td><td>"+pet.available+"</td></tr>";
+                var customer = res[i];
+                var addr = customer.address
+                var row = "<tr><td>"+customer.customer_id+"</td><td>"+customer.user_id+"</td><td>"+customer.first_name+"</td><td>"+customer.last_name+"</td><td>"+
+                addr.street+", "+addr.apartment+","+addr.city+","+addr.state+"-"+addr.zip_code+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
-                    firstPet = pet;
+                    firstCust = customer;
                 }
             }
 
             $("#search_results").append('</table>');
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstCust != "") {
+                update_form_data(firstCust)
             }
 
             flash_message("Success")
