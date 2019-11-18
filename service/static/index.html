@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="static/css/blue_bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/darkly_bootstrap.min.css">
     <script type="text/javascript" src = "static/js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="static/js/rest_api.js"></script>
   </head>
@@ -48,25 +48,29 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="last_name">Password:</label>
+                <label class="control-label col-sm-2" for="password">Password:</label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="password" placeholder="Enter password">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="last_name">Address:</label>
+                <label class="control-label col-sm-2" for="street">Address:</label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="street" placeholder="Enter street">
                 </div>
+                <label class="control-label col-sm-2" for="apartment"></label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="apartment" placeholder="Enter apartment">
                 </div>
+                <label class="control-label col-sm-2" for="city"></label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="city" placeholder="Enter city">
                 </div>
+                <label class="control-label col-sm-2" for="state"></label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="state" placeholder="Enter state">
                 </div>
+                <label class="control-label col-sm-2" for="zip_code"></label>
                 <div class="col-sm-10">
                   <input type="text" class="form-control" id="zip_code" placeholder="Enter zip code">
                 </div>
@@ -74,18 +78,18 @@
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                   <button type="submit" class="btn btn-success" id="create-btn">Create</button>
-                  <button type="submit" class="btn btn-primary" id="retrieve-btn">Retrieve</button>
-                  <button type="submit" class="btn btn-primary" id="update-btn">Update</button>
-                  <button type="submit" class="btn btn-primary" id="deactivate-btn">Deactivate</button>
-                  <button type="submit" class="btn btn-primary" id="activate-btn">Activate</button>
+                  <button type="submit" class="btn btn-info" id="retrieve-btn">Retrieve</button>
+                  <button type="submit" class="btn btn-warning" id="update-btn">Update</button>
+                  <button type="submit" class="btn btn-warning" id="deactivate-btn">Deactivate</button>
+                  <button type="submit" class="btn btn-warning" id="activate-btn">Activate</button>
                   <button type="submit" class="btn btn-danger" id="delete-btn">Delete</button>
-                  <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
+                  <button type="submit" class="btn btn-default" id="clear-btn">Clear</button>
                 </div>
               </div>
           </div> <!-- form div -->
         </div>
 
-        <!-- Search Results -->
+        <!-- Search Results
         <div class="table-responsive col-md-12" id="search_results">
           <table class="table-striped">
             <thead>
@@ -98,10 +102,11 @@
             </thead>
           </table>
         </div>
+         -->
 
         <footer>
           <br><br>
-          <p>&copy; NYU DevOps Company 2017</p>
+          <p>&copy; NYU DevOps eCommerce 2019</p>
         </footer>
         </div><!--/span-->
      </div><!--/row-->
