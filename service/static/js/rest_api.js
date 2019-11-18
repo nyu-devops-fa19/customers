@@ -247,7 +247,7 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for a Customer
     // ****************************************
 
     $("#retrieve-btn").click(function () {
