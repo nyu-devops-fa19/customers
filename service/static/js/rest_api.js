@@ -130,6 +130,60 @@ $(function () {
 
     });
 
+
+    // ****************************************
+    // Deactivate a Customer
+    // ****************************************
+
+    $("#deactivate-btn").click(function () {
+
+        var user_id = $("#user_id").val();
+
+        var ajax = $.ajax({
+                type: "PUT",
+                url: "/customers/" + user_id + "/deactivate",
+                contentType: "application/json"
+            })
+
+        ajax.done(function(res){
+            // console.log(res)
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
+
+    // ****************************************
+    // Activate a Customer
+    // ****************************************
+
+    $("#activate-btn").click(function () {
+
+        var user_id = $("#user_id").val();
+
+        var ajax = $.ajax({
+                type: "PUT",
+                url: "/customers/" + user_id + "/activate",
+                contentType: "application/json"
+            })
+
+        ajax.done(function(res){
+            // console.log(res)
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
+
     // ****************************************
     // Retrieve a Customer
     // ****************************************
