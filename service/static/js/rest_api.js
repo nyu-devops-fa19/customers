@@ -256,7 +256,7 @@ $(function () {
         var lname = $("#last_name").val();
         var city = $("#city").val();
         var state = $("#state").val();
-        var zip = $("#zip").val();
+        var zip = $("#zip_code").val();
 
         var queryString = ""
 
