@@ -261,13 +261,13 @@ $(function () {
         var queryString = ""
 
         if (fname) {
-            queryString += 'first_name=' + fname
+            queryString += 'fname=' + fname
         }
         if (lname) {
             if (queryString.length > 0) {
-                queryString += '&last_name=' + lname
+                queryString += '&lname=' + lname
             } else {
-                queryString += 'last_name=' + lname
+                queryString += 'lname=' + lname
             }
         }
         if (city) {
@@ -304,18 +304,19 @@ $(function () {
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
-            header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">User Name</th>'
-            header += '<th style="width:40%">First Name</th>'
-            header += '<th style="width:10%">Last Name</th>'
-            header += '<th style="width:10%">Address</th></tr>'
+            header += '<th style="width:5%">ID</th>'
+            header += '<th style="width:10%">User Name</th>'
+            header += '<th style="width:15%">First Name</th>'
+            header += '<th style="width:15%">Last Name</th>'
+            header += '<th style="width:40%">Address</th>'
+            header += '<th style="width:15%">Active</th></tr>'
             $("#search_results").append(header);
             var firstCust = "";
             for(var i = 0; i < res.length; i++) {
                 var customer = res[i];
                 var addr = customer.address
                 var row = "<tr><td>"+customer.customer_id+"</td><td>"+customer.user_id+"</td><td>"+customer.first_name+"</td><td>"+customer.last_name+"</td><td>"+
-                addr.street+", "+addr.apartment+","+addr.city+","+addr.state+"-"+addr.zip_code+"</td></tr>";
+                addr.street+", "+addr.apartment+", "+addr.city+", "+addr.state+" - "+addr.zip_code+"</td><td>"+customer.active+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstCust = customer;
@@ -327,6 +328,9 @@ $(function () {
             // copy the first result to the form
             if (firstCust != "") {
                 update_form_data(firstCust)
+            }
+            else {
+                clear_form_data()
             }
 
             flash_message("Success")
