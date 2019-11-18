@@ -72,7 +72,6 @@ Body: JSON containing following fields
 Choices of param:
   * fname - first name (String)  
   * lname - last name (String)  
-  * uid - user id (String)  
   * city - city of primary address (String)  
   * state - state of primary address (String)  
   * zip - zip code of primary address (String)  
