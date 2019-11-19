@@ -39,7 +39,7 @@ $(function () {
         $("#flash_message").append(message);
     }
 
-	// Puts current user_id info into bottom search result table
+    // Puts current user_id info into bottom search result table
     function show_in_search_results_by_user_id() {
 
         var user_id = $("#user_id").val();
@@ -206,7 +206,7 @@ $(function () {
             // console.log(res)
             update_form_data(res)
             flash_message("Customer deactivated.")
-			show_in_search_results_by_user_id()
+            show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
@@ -233,7 +233,7 @@ $(function () {
         ajax.done(function(res){
             update_form_data(res)
             flash_message("Customer activated.")
-			show_in_search_results_by_user_id()
+            show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
