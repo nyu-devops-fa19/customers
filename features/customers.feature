@@ -52,7 +52,7 @@ Scenario: List all customers living in cty3
 Scenario: List all customers living in state st3
     When I visit the "Home Page"
     And I press the "Clear" button
-    And I set the "State" to "st1"
+    And I set the "State" to "st3"
     And I press the "Retrieve" button
     Then I should see "fname3" in the results
     And I should see "fname4" in the results
