@@ -230,6 +230,7 @@ class Customer(db.Model):
     @classmethod
     def remove_all(cls):
         """ Removes all documents from the database (use for testing)  """
+        db.session.remove()
         db.drop_all()
 
     @classmethod

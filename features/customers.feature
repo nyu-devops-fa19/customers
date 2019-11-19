@@ -19,6 +19,6 @@ Scenario: Deactivate a Customer
     When I visit the "Home Page"
     And I set the "user_id" to "id1"
     And I press the "Deactivate" button
-    Then I should see the message "Success"
+    Then I should see the message "Customer deactivated."
     Then I should not see "true" in the results
 
