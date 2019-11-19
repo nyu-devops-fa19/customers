@@ -73,14 +73,13 @@ Scenario: Deactivate a Customer
     Then I should see the message "Customer deactivated."
     Then I should not see "true" in the results
 
-
 Scenario: Update a Customer
     When I visit the "Home Page"
     And I set the "user_id" to "id1"
     And I press the "search" button
     Then I should see "fname1" in the "first_name" field
     And I should see "lname1" in the "last_name" field
-    And I should see "st1" in the "street" field
+    And I should see "str1" in the "street" field
     And I should see "apt1" in the "apartment" field
     And I should see "cty1" in the "city" field
     And I should see "st1" in the "state" field
@@ -106,6 +105,41 @@ Scenario: Delete a Customer
     And I set the "user_id" to "id1"
     And I press the "Delete" button
     Then I should see the message "Customer has been Deleted!"
+
+Scenario: Create a Customer
+    When I visit the "Home Page"
+    And I set the "user_id" to "merrywang"
+    And I set the "first_name" to "merry"
+    And I set the "last_name" to "wang"
+    And I set the "password" to "password123"
+    And I set the "street" to "100 w"
+    And I set the "apartment" to "233"
+    And I set the "city" to "new york city"
+    And I set the "state" to "new york state"
+    And I set the "zip_code" to "10022"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "user_id" field
+    And I press the "Clear" button
+    Then the "user_id" field should be empty
+    And the "first_name" field should be empty
+    And the "last_name" field should be empty
+    And the "password" field should be empty
+    And the "street" field should be empty
+    And the "apartment" field should be empty
+    And the "city" field should be empty
+    And the "state" field should be empty
+    And the "zip_code" field should be empty
+    When I paste the "user_id" field
+    And I press the "search" button
+    Then I should see "merrywang" in the "user_id" field
+    Then I should see "merry" in the "first_name" field
+    Then I should see "wang" in the "last_name" field
+    Then I should see "100 w" in the "street" field
+    Then I should see "233" in the "apartment" field
+    Then I should see "new york city" in the "city" field
+    Then I should see "new york state" in the "state" field
+    Then I should see "10022" in the "zip_code" field
 
 Scenario: Activate a Customer
     When I visit the "Home Page"
