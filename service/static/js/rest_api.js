@@ -19,7 +19,7 @@ $(function () {
         $("#zip_code").val(addr.zip_code);
     }
 
-    /// Clears all form fields
+    // Clears all form fields
     function clear_form_data() {
         $("#user_id").val("");
         $("#first_name").val("");
@@ -37,6 +37,37 @@ $(function () {
     function flash_message(message) {
         $("#flash_message").empty();
         $("#flash_message").append(message);
+    }
+
+    function list_all_inventories() {
+        var ajax = $.ajax({
+            type: "GET",
+            url: "/inventory",
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            $("#search_results").empty();
+            var table = '<table class="table-striped"><tr><thead>'
+            table += '<th class="col-md-3 text-center">ID</th>'
+            table += '<th class="col-md-2 text-center">Product Id</th>'
+            table += '<th class="col-md-1 text-center">Quantity</th>'
+            table += '<th class="col-md-2 text-center">Restock Level</th>'
+            table += '<th class="col-md-2 text-center">Condition</th>'
+            table += '<th class="col-md-2 text-center">Availability</th></tr>'
+            table += '</thead><tbody>'
+            for(var i = 0; i < res.length; i++) {
+                var inventory = res[i];
+                table += "<tr ><td>"+inventory._id+"</td><td>"+inventory.product_id+"</td><td>"+inventory.quantity+"</td><td>"+inventory.restock_level+"</td><td>"+inventory.condition+"</td><td>"+inventory.available+"</td></tr>";
+            }
+            table += '<tbody></table>'
+            $("#search_results").append(table);
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
     }
 
     // ****************************************
@@ -261,7 +292,7 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#user_id").val("");
         clear_form_data()
     });
 
