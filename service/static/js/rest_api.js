@@ -95,26 +95,45 @@ $(function () {
     });
 
 
-    // ****************************************
-    // Update a Pet
+// ****************************************
+    // Update a Customer
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var user_id = $("#user_id").val();
+        var first_name = $("#first_name").val();
+        var last_name = $("#last_name").val();
+        var password = $("#password").val();
 
+        // get address from the ui
+        var street = $("#street").val();
+        var apartment = $("#apartment").val();
+        var city = $("#city").val();
+        var state = $("#state").val();
+        var zip_code = $("#zip_code").val();
+
+        // create address obj
+        var address = {
+            "street": street,
+            "apartment": apartment,
+            "city": city,
+            "state": state,
+            "zip_code": zip_code
+        }
+
+        // create data obj
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "user_id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "password": password,
+            "address": address
         };
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/pets/" + pet_id,
+                url: "/customers/" + user_id,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -213,23 +232,23 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete a Customer
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var user_id = $("#user_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/pets/" + pet_id,
+            url: "/customers/" + user_id,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("Customer has been Deleted!")
         });
 
         ajax.fail(function(res){
