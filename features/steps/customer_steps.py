@@ -59,4 +59,80 @@ def step_impl(context, message):
     error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
     ensure(message in context.resp.text, False, error_msg)
 
+@when(u'I set the "{element_name}" to "{text_string}"')
+def step_impl(context, element_name, text_string):
+    element_id = element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    element.clear()
+    element.send_keys(text_string)
+
+
+##################################################################
+# These two function simulate copy and paste
+##################################################################
+@when('I copy the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'customer_' + element_name.lower()
+    # element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    context.clipboard = element.get_attribute('value')
+    logging.info('Clipboard contains: %s', context.clipboard)
+
+@when('I paste the "{element_name}" field')
+def step_impl(context, element_name):
+    element_id = 'customer_' + element_name.lower()
+    # element = context.driver.find_element_by_id(element_id)
+    element = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(context.clipboard)
+
+##################################################################
+# This code works because of the following naming convention:
+# The buttons have an id in the html hat is the button text
+# in lowercase followed by '-btn' so the Clean button has an id of
+# id='clear-btn'. That allows us to lowercase the name and add '-btn'
+# to get the element id of any button
+##################################################################
+
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element_by_id(button_id).click()
+
+@then('I should see "{name}" in the results')
+def step_impl(context, name):
+    # element = context.driver.find_element_by_id('search_results')
+    # expect(element.text).to_contain(name)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    expect(found).to_be(True)
+
+@then('I should not see "{name}" in the results')
+def step_impl(context, name):
+    element = context.driver.find_element_by_id('search_results')
+    logging.info(element.text)
+    error_msg = "I should not see '%s' in '%s'" % (name, element.text)
+    ensure(name in element.text, False, error_msg)
+
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    # element = context.driver.find_element_by_id('flash_message')
+    # expect(element.text).to_contain(message)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            message
+        )
+    )
+    expect(found).to_be(True)
+
+
 
