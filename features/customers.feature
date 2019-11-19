@@ -15,3 +15,10 @@ Scenario: The server is running
     Then I should see "Customer RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Deactivate a Customer
+    When I visit the "Home Page"
+    And I set the "user_id" to "id1"
+    And I press the "Deactivate" button
+    Then I should see the message "Customer deactivated."
+    Then I should not see "true" in the results
+
