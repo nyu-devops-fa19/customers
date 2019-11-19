@@ -22,3 +22,37 @@ Scenario: Deactivate a Customer
     Then I should see the message "Customer deactivated."
     Then I should not see "true" in the results
 
+Scenario: Update a Customer
+    When I visit the "Home Page"
+    And I set the "user_id" to "id1"
+    And I press the "search" button
+    Then I should see "fname1" in the "first_name" field
+    And I should see "lname1" in the "last_name" field
+    And I should see "st1" in the "street" field
+    And I should see "apt1" in the "apartment" field
+    And I should see "cty1" in the "city" field
+    And I should see "st1" in the "state" field
+    And I should see "code1" in the "zip_code" field
+    When I change "first_name" to "fchanged_name"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "user_id" field
+    And I press the "Clear" button
+    And I paste the "user_id" field
+    And I press the "Search" button
+    Then I should see "fchanged_name" in the "first_name" field
+    When I copy the "first_name" field
+    And I press the "Clear" button
+    And I paste the "first_name" field
+    And I press the "Retrieve" button
+    Then I should see "fchanged_name" in the results
+    Then I should not see "fname1" in the results
+
+
+Scenario: Delete a Customer
+    When I visit the "Home Page"
+    And I set the "user_id" to "id1"
+    And I press the "Delete" button
+    Then I should see the message "Customer has been Deleted!"
+
+
