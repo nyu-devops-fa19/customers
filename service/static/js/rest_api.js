@@ -39,34 +39,41 @@ $(function () {
         $("#flash_message").append(message);
     }
 
-    function list_all_inventories() {
+	// Puts current user_id info into bottom search result table
+    function show_in_search_results_by_user_id() {
+
+        var user_id = $("#user_id").val();
         var ajax = $.ajax({
             type: "GET",
-            url: "/inventory",
+            url: "/customers/" + user_id,
             contentType: "application/json",
             data: ''
         })
 
         ajax.done(function(res){
             $("#search_results").empty();
-            var table = '<table class="table-striped"><tr><thead>'
-            table += '<th class="col-md-3 text-center">ID</th>'
-            table += '<th class="col-md-2 text-center">Product Id</th>'
-            table += '<th class="col-md-1 text-center">Quantity</th>'
-            table += '<th class="col-md-2 text-center">Restock Level</th>'
-            table += '<th class="col-md-2 text-center">Condition</th>'
-            table += '<th class="col-md-2 text-center">Availability</th></tr>'
-            table += '</thead><tbody>'
+            $("#search_results").append('<table class="table-striped" cellpadding="10">');
+            var header = '<tr>'
+            header += '<th style="width:5%">ID</th>'
+            header += '<th style="width:10%">User Name</th>'
+            header += '<th style="width:15%">First Name</th>'
+            header += '<th style="width:15%">Last Name</th>'
+            header += '<th style="width:40%">Address</th>'
+            header += '<th style="width:15%">Active</th></tr>'
+            $("#search_results").append(header);
+            var firstCust = "";
             for(var i = 0; i < res.length; i++) {
-                var inventory = res[i];
-                table += "<tr ><td>"+inventory._id+"</td><td>"+inventory.product_id+"</td><td>"+inventory.quantity+"</td><td>"+inventory.restock_level+"</td><td>"+inventory.condition+"</td><td>"+inventory.available+"</td></tr>";
+                var customer = res[i];
+                var addr = customer.address
+                var row = "<tr><td>"+customer.customer_id+"</td><td>"+customer.user_id+"</td><td>"+customer.first_name+"</td><td>"+customer.last_name+"</td><td>"+
+                addr.street+", "+addr.apartment+", "+addr.city+", "+addr.state+" - "+addr.zip_code+"</td><td>"+customer.active+"</td></tr>";
+                $("#search_results").append(row);
+                if (i == 0) {
+                    firstCust = customer;
+                }
             }
-            table += '<tbody></table>'
-            $("#search_results").append(table);
-        });
 
-        ajax.fail(function(res){
-            flash_message(res.responseJSON.message)
+            $("#search_results").append('</table>');
         });
     }
 
@@ -199,6 +206,7 @@ $(function () {
             // console.log(res)
             update_form_data(res)
             flash_message("Customer deactivated.")
+			show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
@@ -223,9 +231,9 @@ $(function () {
             })
 
         ajax.done(function(res){
-            // console.log(res)
             update_form_data(res)
             flash_message("Customer activated.")
+			show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
@@ -309,7 +317,7 @@ $(function () {
 
         var queryString = ""
 
-        
+
         if (fname) {
             queryString += 'fname=' + fname
         }
