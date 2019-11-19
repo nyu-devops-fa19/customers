@@ -19,7 +19,7 @@ $(function () {
         $("#zip_code").val(addr.zip_code);
     }
 
-    /// Clears all form fields
+    // Clears all form fields
     function clear_form_data() {
         $("#user_id").val("");
         $("#first_name").val("");
@@ -37,6 +37,44 @@ $(function () {
     function flash_message(message) {
         $("#flash_message").empty();
         $("#flash_message").append(message);
+    }
+
+    // Puts current user_id info into bottom search result table
+    function show_in_search_results_by_user_id() {
+
+        var user_id = $("#user_id").val();
+        var ajax = $.ajax({
+            type: "GET",
+            url: "/customers/" + user_id,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            $("#search_results").empty();
+            $("#search_results").append('<table class="table-striped" cellpadding="10">');
+            var header = '<tr>'
+            header += '<th style="width:5%">ID</th>'
+            header += '<th style="width:10%">User Name</th>'
+            header += '<th style="width:15%">First Name</th>'
+            header += '<th style="width:15%">Last Name</th>'
+            header += '<th style="width:40%">Address</th>'
+            header += '<th style="width:15%">Active</th></tr>'
+            $("#search_results").append(header);
+            var firstCust = "";
+            for(var i = 0; i < res.length; i++) {
+                var customer = res[i];
+                var addr = customer.address
+                var row = "<tr><td>"+customer.customer_id+"</td><td>"+customer.user_id+"</td><td>"+customer.first_name+"</td><td>"+customer.last_name+"</td><td>"+
+                addr.street+", "+addr.apartment+", "+addr.city+", "+addr.state+" - "+addr.zip_code+"</td><td>"+customer.active+"</td></tr>";
+                $("#search_results").append(row);
+                if (i == 0) {
+                    firstCust = customer;
+                }
+            }
+
+            $("#search_results").append('</table>');
+        });
     }
 
     // ****************************************
@@ -168,6 +206,7 @@ $(function () {
             // console.log(res)
             update_form_data(res)
             flash_message("Customer deactivated.")
+            show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
@@ -192,9 +231,9 @@ $(function () {
             })
 
         ajax.done(function(res){
-            // console.log(res)
             update_form_data(res)
             flash_message("Customer activated.")
+            show_in_search_results_by_user_id()
         });
 
         ajax.fail(function(res){
@@ -261,7 +300,7 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#user_id").val("");
         clear_form_data()
     });
 
@@ -278,7 +317,7 @@ $(function () {
 
         var queryString = ""
 
-        
+
         if (fname) {
             queryString += 'fname=' + fname
         }
