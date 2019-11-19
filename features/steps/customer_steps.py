@@ -59,4 +59,19 @@ def step_impl(context, message):
     error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
     ensure(message in context.resp.text, False, error_msg)
 
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element_by_id(button_id).click()
 
+@then('I should see "{name}" in the results')
+def step_impl(context, name):
+    # element = context.driver.find_element_by_id('search_results')
+    # expect(element.text).to_contain(name)
+    found = WebDriverWait(context.driver, WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            name
+        )
+    )
+    expect(found).to_be(True)

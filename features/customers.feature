@@ -15,3 +15,9 @@ Scenario: The server is running
     Then I should see "Customer RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: List all pets
+    When I visit the "Home Page"
+    And I press the "Retrieve" button
+    Then I should see "fname1" in the results
+    And I should see "fname2" in the results
+    And I should see "fname3" in the results
