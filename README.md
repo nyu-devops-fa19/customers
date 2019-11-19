@@ -17,9 +17,8 @@ API Key: aafb0461-29be-4699-bac2-d1017ae79cf9
 ```
 vagrant up
 vagrant ssh
-cd /vagrant
-nosetests
-FLASK_APP=service:app flask run --host=0.0.0.0 --port=5000
+cd /vagrant/
+honcho start
 ```
 Then on your own machine, you can see by visiting: http://localhost:5000/
 
