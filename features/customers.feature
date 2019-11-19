@@ -107,3 +107,12 @@ Scenario: Create a Customer
     Then I should see "new york city" in the "city" field
     Then I should see "new york state" in the "state" field
     Then I should see "10022" in the "zip_code" field
+
+Scenario: Activate a Customer
+    When I visit the "Home Page"
+    And I set the "user_id" to "id1"
+    And I press the "Deactivate" button
+    And I press the "Activate" button
+    Then I should see the message "Customer activated."
+    Then I should not see "false" in the results
+
