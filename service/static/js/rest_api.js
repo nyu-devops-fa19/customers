@@ -207,7 +207,7 @@ $(function () {
     // Retrieve a Customer
     // ****************************************
 
-    $("#retrieve-btn").click(function () {
+    $("#retrieve-uid-btn").click(function () {
         console.log("retrieve-btn.click")
         var user_id = $("#user_id").val();
         var ajax = $.ajax({
@@ -270,7 +270,6 @@ $(function () {
     // ****************************************
 
     $("#retrieve-btn").click(function () {
-
         var fname = $("#first_name").val();
         var lname = $("#last_name").val();
         var city = $("#city").val();
@@ -279,6 +278,7 @@ $(function () {
 
         var queryString = ""
 
+        
         if (fname) {
             queryString += 'fname=' + fname
         }
@@ -358,7 +358,5 @@ $(function () {
         ajax.fail(function(res){
             flash_message(res.responseJSON.message)
         });
-
     });
-
 })
