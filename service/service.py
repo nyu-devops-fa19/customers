@@ -187,7 +187,7 @@ def delete_customers(user_id):
     """
     app.logger.info('Request to delete customer with user_id: %s', user_id)
     customer = Customer.find(user_id)
-    if customers.count() != 0:
+    if customer:
         cust = customer[0]
         cust.delete()
     return make_response('', status.HTTP_204_NO_CONTENT)
