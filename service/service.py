@@ -256,6 +256,16 @@ def activate_customers(user_id):
     return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# DELETE ALL CUSTOMER DATA (for testing only)
+######################################################################
+@app.route('/customers/reset', methods=['DELETE'])
+def customers_reset():
+    """ Removes all customers from the database """
+    Customer.remove_all()
+    init_db()
+    return make_response('', status.HTTP_204_NO_CONTENT)
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
