@@ -5,11 +5,11 @@ Feature: The customer service back-end
 
 Background:
     Given the following customers
-        | user_id | first_name | last_name | password | street  | apartment | city | state | zip_code |
-        |   id1   |   fname1   |  lname1   |   pwd1   |  str1   |    apt1   | cty1 |  st1  |  code1   |
-        |   id2   |   fname2   |  lname2   |   pwd2   |  str2   |    apt2   | cty2 |  st2  |  code2   |
-        |   id3   |   fname3   |  lname3   |   pwd3   |  str3   |    apt3   | cty3 |  st3  |  code3   |
-        |   id4   |   fname4   |  lname4   |   pwd4   |  str4   |    apt4   | cty3 |  st4  |  code4   |
+        | user_id | first_name | last_name | password | street | apartment | city | state | zip_code |
+        |   id1   |   fname1   |  lname1   |   pwd1   |  str1  |    apt1   | cty1 |  st1  |  code1   |
+        |   id2   |   fname2   |  lname2   |   pwd2   |  str2  |    apt2   | cty2 |  st2  |  code2   |
+        |   id3   |   fname3   |  lname3   |   pwd3   |  str3  |    apt3   | cty3 |  st3  |  code3   |
+        |   id4   |   fname4   |  lname4   |   pwd4   |  str4  |    apt4   | cty3 |  st4  |  code4   |
 
 Scenario: The server is running
     When I visit the "Home Page"
