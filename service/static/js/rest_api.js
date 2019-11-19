@@ -246,7 +246,7 @@ $(function () {
     // Retrieve a Customer
     // ****************************************
 
-    $("#retrieve-uid-btn").click(function () {
+    $("#search-btn").click(function () {
         console.log("retrieve-btn.click")
         var user_id = $("#user_id").val();
         var ajax = $.ajax({
