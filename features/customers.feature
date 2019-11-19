@@ -15,3 +15,7 @@ Scenario: The server is running
     Then I should see "Customer RESTful Service" in the title
     And I should not see "404 Not Found"
 
+
+# Scenario: The server is running
+#     When I visited the "Homw Page"
+#     Then I should see
