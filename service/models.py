@@ -228,6 +228,11 @@ class Customer(db.Model):
         return cls.query.all()
 
     @classmethod
+    def remove_all(cls):
+        """ Removes all documents from the database (use for testing)  """
+        db.drop_all()
+
+    @classmethod
     def find_by_first_name(cls, f_name):
         """ Returns all of the Customers with the given first name
 

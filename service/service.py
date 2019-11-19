@@ -187,7 +187,7 @@ def delete_customers(user_id):
     """
     app.logger.info('Request to delete customer with user_id: %s', user_id)
     customer = Customer.find(user_id)
-    if customer:
+    if customers.count() != 0:
         cust = customer[0]
         cust.delete()
     return make_response('', status.HTTP_204_NO_CONTENT)
@@ -254,6 +254,16 @@ def activate_customers(user_id):
     cust.active = True
     cust.save()
     return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DELETE ALL CUSTOMER DATA (for testing only)
+######################################################################
+@app.route('/customers/reset', methods=['DELETE'])
+def customers_reset():
+    """ Removes all customers from the database """
+    Customer.remove_all()
+    init_db()
+    return make_response('', status.HTTP_204_NO_CONTENT)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
