@@ -167,7 +167,7 @@ $(function () {
         ajax.done(function(res){
             // console.log(res)
             update_form_data(res)
-            flash_message("Success")
+            flash_message("Customer deactivated.")
         });
 
         ajax.fail(function(res){
@@ -194,7 +194,7 @@ $(function () {
         ajax.done(function(res){
             // console.log(res)
             update_form_data(res)
-            flash_message("Success")
+            flash_message("Customer activated.")
         });
 
         ajax.fail(function(res){
