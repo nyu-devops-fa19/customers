@@ -66,6 +66,31 @@ api = Api(app,
          )
 
 
+# Define the model so that the docs reflect what can be sent
+customer_model = api.model('Customer', {
+    'customer_id': fields.String(readOnly=True,
+                         description='The unique id assigned internally by service'),
+    'user_id': fields.String(required=True,
+                         description='The unique id given by customer'),
+    'first_name': fields.String(required=True,
+                          description='The first name of the Customer'),
+    'last_name': fields.String(required=True,
+                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+    'password': fields.String(required=True,
+                                description='Password'),
+    'street': fields.String(required=True,
+                                description='street'),
+    'apartment': fields.String(required=True,
+                                description='apartment'),
+    'city': fields.String(required=True,
+                                description='city'),
+    'state': fields.String(required=True,
+                                description='state'),
+    'zip_code': fields.String(required=True,
+                                description='zip_code')
+})
+
+
 ######################################################################
 # Authorization Decorator
 ######################################################################
