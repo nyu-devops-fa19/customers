@@ -26,9 +26,11 @@ PUT /customers/{user_id}/activate - activates a Customer record in the database
 
 import os
 import sys
+import uuid
 import logging
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
+from flask_restplus import Api, Resource, fields, reqparse, inputs
 from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
@@ -38,6 +40,64 @@ from service.models import Customer, DataValidationError, Address
 
 # Import Flask application
 from . import app
+
+# Document the type of autorization required
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
+
+######################################################################
+# Configure Swagger before initilaizing it
+######################################################################
+api = Api(app,
+          version='1.0.0',
+          title='Customer REST API Service',
+          description='This is a Customer server.',
+          default='customers',
+          default_label='Customers operations',
+          # doc='/', 
+          doc = '/apidocs/',
+          authorizations=authorizations
+          # prefix='/api'
+         )
+
+
+######################################################################
+# Authorization Decorator
+######################################################################
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'X-Api-Key' in request.headers:
+            token = request.headers['X-Api-Key']
+
+        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
+            return f(*args, **kwargs)
+        else:
+            return {'message': 'Invalid or missing token'}, 401
+    return decorated
+
+
+######################################################################
+# Function to generate a random API key (good for testing)
+######################################################################
+def generate_apikey():
+    """ Helper function used when testing API keys """
+    return uuid.uuid4().hex
+
+
+######################################################################
+# GET HEALTH CHECK
+######################################################################
+@app.route('/healthcheck')
+def healthcheck():
+    """ Let them know our heart is still beating """
+    return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
 
 ######################################################################
 # Error Handlers
