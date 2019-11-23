@@ -2,10 +2,11 @@
 Flask==1.1.1
 Flask-API==1.1
 Flask-SQLAlchemy==2.4.1
+flask-restplus==0.13.0
 psycopg2-binary==2.8.3
 cloudant==2.12.0
 retry==0.9.2
-gunicorn==19.9.0
+gunicorn==20.0.0
 
 # Runtime
 honcho==1.0.1
@@ -26,4 +27,3 @@ requests==2.22.0
 # Code coverage
 coverage==4.5.4
 codecov==2.0.15
-
