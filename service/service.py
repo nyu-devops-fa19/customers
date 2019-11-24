@@ -24,6 +24,7 @@ PUT /customers/{user_id}/deactivate - deactivates a Customer record in the datab
 PUT /customers/{user_id}/activate - activates a Customer record in the database
 """
 
+import atexit
 import os
 import sys
 import logging
@@ -263,7 +264,6 @@ def customers_reset():
     """ Removes all customers from the database """
     Address.remove_all()
     Customer.remove_all()
-    init_db()
     return make_response('', status.HTTP_204_NO_CONTENT)
 
 ######################################################################
@@ -274,7 +274,6 @@ def init_db():
     """ Initialies the SQLAlchemy app """
     global app
     Customer.init_db(app)
-    Address.init_db(app)
 
 def check_content_type(content_type):
     """ Checks that the media type is correct """
@@ -303,3 +302,9 @@ def initialize_logging(log_level=logging.INFO):
         app.logger.setLevel(log_level)
         app.logger.propagate = False
         app.logger.info('Logging handler established')
+
+# def disconnect_db(cls):
+#     """ Disconnect from the database """
+#     Customer.disconnect()
+
+# atexit.register(disconnect_db)

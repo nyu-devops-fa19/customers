@@ -283,6 +283,12 @@ class Customer(db.Model):
             return cls.query.filter(cls.user_id == user_id and cls.active)
         else:
             return cls.query.filter(cls.user_id == user_id)
+            
+    # @classmethod
+    # def disconnect(cls):
+    #     """ Disconnect from the database """
+    #     logger.info('Disconnecting from the database')
+    #     db.session.remove()
     '''
     @classmethod
     def find_or_404(cls, pet_id):
