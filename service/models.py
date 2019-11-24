@@ -140,6 +140,13 @@ class Address(db.Model):
         db.session.delete(cls.query.get(addr_id))
         db.session.commit()
 
+    @classmethod
+    def remove_all(cls):
+        """ Removes all products from the database (use for testing)  """
+        for address in cls.query.all():
+            db.session.delete(address)
+        db.session.commit()
+
 class Customer(db.Model):
     """
     Class that represents a Customer
@@ -229,9 +236,10 @@ class Customer(db.Model):
 
     @classmethod
     def remove_all(cls):
-        """ Removes all documents from the database (use for testing)  """
-        db.session.remove()
-        db.drop_all()
+        """ Removes all products from the database (use for testing)  """
+        for customer in cls.query.all():
+            db.session.delete(customer)
+        db.session.commit()
 
     @classmethod
     def find_by_first_name(cls, f_name):
@@ -275,10 +283,9 @@ class Customer(db.Model):
             return cls.query.filter(cls.user_id == user_id and cls.active)
         else:
             return cls.query.filter(cls.user_id == user_id)
-    '''
+
     @classmethod
     def find_or_404(cls, pet_id):
         """ Find a Pet by it's id """
         cls.logger.info('Processing lookup or 404 for id %s ...', pet_id)
         return cls.query.get_or_404(pet_id)
-    '''
