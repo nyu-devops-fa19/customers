@@ -261,6 +261,7 @@ def activate_customers(user_id):
 @app.route('/customers/reset', methods=['DELETE'])
 def customers_reset():
     """ Removes all customers from the database """
+    Address.remove_all()
     Customer.remove_all()
     init_db()
     return make_response('', status.HTTP_204_NO_CONTENT)
