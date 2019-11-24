@@ -24,7 +24,6 @@ PUT /customers/{user_id}/deactivate - deactivates a Customer record in the datab
 PUT /customers/{user_id}/activate - activates a Customer record in the database
 """
 
-import atexit
 import os
 import sys
 import logging
@@ -302,9 +301,3 @@ def initialize_logging(log_level=logging.INFO):
         app.logger.setLevel(log_level)
         app.logger.propagate = False
         app.logger.info('Logging handler established')
-
-# def disconnect_db(cls):
-#     """ Disconnect from the database """
-#     Customer.disconnect()
-
-# atexit.register(disconnect_db)
