@@ -87,6 +87,29 @@ customer_model = api.model('Customer', {
     'state': fields.String(required=True,
                                 description='state'),
     'zip_code': fields.String(required=True,
+                                description='zip_code'),
+    'status': fields.String(required=False,
+                                description='status'),
+})
+
+create_model = api.model('Customer', {
+    'user_id': fields.String(required=True,
+                         description='The unique id given by customer'),
+    'first_name': fields.String(required=True,
+                          description='The first name of the Customer'),
+    'last_name': fields.String(required=True,
+                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+    'password': fields.String(required=True,
+                                description='Password'),
+    'street': fields.String(required=True,
+                                description='street'),
+    'apartment': fields.String(required=True,
+                                description='apartment'),
+    'city': fields.String(required=True,
+                                description='city'),
+    'state': fields.String(required=True,
+                                description='state'),
+    'zip_code': fields.String(required=True,
                                 description='zip_code')
 })
 
