@@ -51,6 +51,14 @@ authorizations = {
 }
 
 ######################################################################
+# GET INDEX
+######################################################################
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+######################################################################
 # Configure Swagger before initilaizing it
 ######################################################################
 api = Api(app,
@@ -59,12 +67,10 @@ api = Api(app,
           description='This is a Customer server.',
           default='customers',
           default_label='Customers operations',
-          # doc='/', 
-          doc = '/apidocs/',
-          authorizations=authorizations
-          # prefix='/api'
+          doc = '/api/apidocs',
+          authorizations=authorizations,
+          prefix='/api'
          )
-
 
 # Define the model so that the docs reflect what can be sent
 customer_model = api.model('Customer', {
@@ -201,12 +207,7 @@ def internal_server_error(error):
                    message=message), status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-######################################################################
-# GET INDEX
-######################################################################
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+
 
 ######################################################################
 # LIST ALL CUSTOMERS
