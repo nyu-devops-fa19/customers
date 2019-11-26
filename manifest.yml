@@ -12,7 +12,3 @@ applications:
   buildpack: python_buildpack
   timeout: 180
   command: gunicorn --bind=0.0.0.0:$PORT service:app
-  env:
-    FLASK_APP
-    FLASK_DEBUG
-    DATABASE_URI
