@@ -11,4 +11,4 @@ applications:
   disk_quota: 1024M
   buildpack: python_buildpack
   timeout: 180
-  command: gunicorn --bind=0.0.0.0:$PORT service:app
+  #command: gunicorn --bind=0.0.0.0:$PORT service:app
