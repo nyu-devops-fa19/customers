@@ -32,6 +32,9 @@ from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields, reqparse, inputs
 from werkzeug.exceptions import NotFound
+import uuid
+from functools import wraps
+from flask_restplus import Api, Resource, fields, reqparse, inputs
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
@@ -57,101 +60,76 @@ authorizations = {
 def index():
     return app.send_static_file('index.html')
 
-
 ######################################################################
 # Configure Swagger before initilaizing it
 ######################################################################
 api = Api(app,
           version='1.0.0',
           title='Customer REST API Service',
-          description='This is a Customer server.',
+          description='This is Customer server.',
           default='customers',
-          default_label='Customers operations',
-          doc = '/api/apidocs',
-          authorizations=authorizations,
-          prefix='/api'
+          default_label='Customer operations',
+          doc='/apidocs/',
+
+          authorizations=authorizations
          )
 
 # Define the model so that the docs reflect what can be sent
 customer_model = api.model('Customer', {
     'customer_id': fields.String(readOnly=True,
-                         description='The unique id assigned internally by service'),
+                                 description='The unique id assigned internally by service'),
     'user_id': fields.String(required=True,
-                         description='The unique id given by customer'),
+                             description='The unique id given by customer'),
     'first_name': fields.String(required=True,
-                          description='The first name of the Customer'),
+                                description='The first name of the Customer'),
     'last_name': fields.String(required=True,
-                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+                               description='The last name of Customer (e.g., Wang, Gates, etc.)'),
     'password': fields.String(required=True,
-                                description='Password'),
+                              description='Password'),
     'street': fields.String(required=True,
-                                description='street'),
+                            description='street'),
     'apartment': fields.String(required=True,
-                                description='apartment'),
+                               description='apartment'),
     'city': fields.String(required=True,
-                                description='city'),
+                          description='city'),
     'state': fields.String(required=True,
-                                description='state'),
+                           description='state'),
     'zip_code': fields.String(required=True,
-                                description='zip_code'),
+                              description='zip_code'),
     'status': fields.String(required=False,
-                                description='status'),
+                            description='status')
 })
 
 create_model = api.model('Customer', {
     'user_id': fields.String(required=True,
-                         description='The unique id given by customer'),
+                             description='The unique id given by customer'),
     'first_name': fields.String(required=True,
-                          description='The first name of the Customer'),
+                                description='The first name of the Customer'),
     'last_name': fields.String(required=True,
-                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+                               description='The last name of Customer (e.g., Wang, Gates, etc.)'),
     'password': fields.String(required=True,
-                                description='Password'),
+                              description='Password'),
     'street': fields.String(required=True,
-                                description='street'),
+                            description='street'),
     'apartment': fields.String(required=True,
-                                description='apartment'),
+                               description='apartment'),
     'city': fields.String(required=True,
-                                description='city'),
+                          description='city'),
     'state': fields.String(required=True,
-                                description='state'),
+                           description='state'),
     'zip_code': fields.String(required=True,
-                                description='zip_code')
+                              description='zip_code')
 })
 
-
-######################################################################
-# Authorization Decorator
-######################################################################
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        if 'X-Api-Key' in request.headers:
-            token = request.headers['X-Api-Key']
-
-        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
-            return f(*args, **kwargs)
-        else:
-            return {'message': 'Invalid or missing token'}, 401
-    return decorated
-
-
-######################################################################
-# Function to generate a random API key (good for testing)
-######################################################################
-def generate_apikey():
-    """ Helper function used when testing API keys """
-    return uuid.uuid4().hex
-
-
-######################################################################
-# GET HEALTH CHECK
-######################################################################
-@app.route('/healthcheck')
-def healthcheck():
-    """ Let them know our heart is still beating """
-    return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
+# query string arguments
+customer_args = reqparse.RequestParser()
+customer_args.add_argument('first_name', type=str, required=False, help='List Customers by first name')
+customer_args.add_argument('last_name', type=str, required=False, help='List Customers by last name')
+customer_args.add_argument('street', type=str, required=False, help='List Customers by street')
+customer_args.add_argument('apartment', type=str, required=False, help='List Customers by apartment')
+customer_args.add_argument('city', type=str, required=False, help='List Customers by city')
+customer_args.add_argument('state', type=str, required=False, help='List Customers by state')
+customer_args.add_argument('zip_code', type=str, required=False, help='List Customers by zip code')
 
 ######################################################################
 # Error Handlers
@@ -206,8 +184,38 @@ def internal_server_error(error):
                    error='Internal Server Error',
                    message=message), status.HTTP_500_INTERNAL_SERVER_ERROR
 
+######################################################################
+# Authorization Decorator
+######################################################################
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'X-Api-Key' in request.headers:
+            token = request.headers['X-Api-Key']
+
+        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
+            return f(*args, **kwargs)
+        else:
+            return {'message': 'Invalid or missing token'}, 401
+    return decorated
 
 
+######################################################################
+# Function to generate a random API key (good for testing)
+######################################################################
+def generate_apikey():
+    """ Helper function used when testing API keys """
+    return uuid.uuid4().hex
+
+
+######################################################################
+# GET HEALTH CHECK
+######################################################################
+@app.route('/healthcheck')
+def healthcheck():
+    """ Let them know our heart is still beating """
+    return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
 
 ######################################################################
 # LIST ALL CUSTOMERS
@@ -323,46 +331,52 @@ def update_customers(user_id):
     return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# DEACTIVATE A CUSTOMER
+# PATH: /customers/{user_id}/deactivate
 ######################################################################
-@app.route('/customers/<string:user_id>/deactivate', methods=['PUT'])
-def deactivate_customers(user_id):
-    """
-    Deactivate a Customer
-    This endpoint will deactivate a Customer
-    """
-    app.logger.info('Request to deactivate customer with id: %s', user_id)
-    check_content_type('application/json')
-    customers = Customer.find(user_id)
-    if customers.count() == 0:
-        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+@api.route('/customers/<user_id>/deactivate')
+@api.param('user_id', 'Customer identifier')
+class DeactivateResource(Resource):
+    """ Deactivate action on a Customer """
+    @api.doc('deactivate_customer', security='apikey')
+    def put(self, user_id):
+        """
+        Deactivate a Customer
+        This endpoint will deactivate a Customer
+        """
+        app.logger.info('Request to deactivate customer with id: %s', user_id)
+        customers = Customer.find(user_id)
+        if customers.count() == 0:
+            raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
-    cust = customers[0]
-    cust.user_id = user_id
-    cust.active = False
-    cust.save()
-    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+        cust = customers[0]
+        cust.user_id = user_id
+        cust.active = False
+        cust.save()
+        return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
 ######################################################################
-# ACTIVATE A CUSTOMER
+# PATH: /customers/{user_id}/activate
 ######################################################################
-@app.route('/customers/<string:user_id>/activate', methods=['PUT'])
-def activate_customers(user_id):
-    """
-    Activate a Customer
-    This endpoint will activate a Customer
-    """
-    app.logger.info('Request to activate customer with id: %s', user_id)
-    check_content_type('application/json')
-    customers = Customer.find(user_id, False)
-    if customers.count() == 0:
-        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+@api.route('/customers/<user_id>/activate')
+@api.param('user_id', 'Customer identifier')
+class ActivateResource(Resource):
+    """ Activate action on a Customer """
+    @api.doc('activate_customer', security='apikey')
+    def put(self, user_id):
+        """
+        Activate a Customer
+        This endpoint will activate a Customer
+        """
+        app.logger.info('Request to activate customer with id: %s', user_id)
+        customers = Customer.find(user_id)
+        if customers.count() == 0:
+            raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
-    cust = customers[0]
-    cust.user_id = user_id
-    cust.active = True
-    cust.save()
-    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+        cust = customers[0]
+        cust.user_id = user_id
+        cust.active = True
+        cust.save()
+        return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # DELETE ALL CUSTOMER DATA (for testing only)
