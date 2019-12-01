@@ -26,9 +26,11 @@ PUT /customers/{user_id}/activate - activates a Customer record in the database
 
 import os
 import sys
+import uuid
 import logging
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
+from flask_restplus import Api, Resource, fields, reqparse, inputs
 from werkzeug.exceptions import NotFound
 
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
@@ -38,6 +40,118 @@ from service.models import Customer, DataValidationError, Address
 
 # Import Flask application
 from . import app
+
+# Document the type of autorization required
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-Api-Key'
+    }
+}
+
+######################################################################
+# GET INDEX
+######################################################################
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+######################################################################
+# Configure Swagger before initilaizing it
+######################################################################
+api = Api(app,
+          version='1.0.0',
+          title='Customer REST API Service',
+          description='This is a Customer server.',
+          default='customers',
+          default_label='Customers operations',
+          doc = '/api/apidocs',
+          authorizations=authorizations,
+          prefix='/api'
+         )
+
+# Define the model so that the docs reflect what can be sent
+customer_model = api.model('Customer', {
+    'customer_id': fields.String(readOnly=True,
+                         description='The unique id assigned internally by service'),
+    'user_id': fields.String(required=True,
+                         description='The unique id given by customer'),
+    'first_name': fields.String(required=True,
+                          description='The first name of the Customer'),
+    'last_name': fields.String(required=True,
+                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+    'password': fields.String(required=True,
+                                description='Password'),
+    'street': fields.String(required=True,
+                                description='street'),
+    'apartment': fields.String(required=True,
+                                description='apartment'),
+    'city': fields.String(required=True,
+                                description='city'),
+    'state': fields.String(required=True,
+                                description='state'),
+    'zip_code': fields.String(required=True,
+                                description='zip_code'),
+    'status': fields.String(required=False,
+                                description='status'),
+})
+
+create_model = api.model('Customer', {
+    'user_id': fields.String(required=True,
+                         description='The unique id given by customer'),
+    'first_name': fields.String(required=True,
+                          description='The first name of the Customer'),
+    'last_name': fields.String(required=True,
+                              description='The last name of Customer (e.g., Wang, Gates, etc.)'),
+    'password': fields.String(required=True,
+                                description='Password'),
+    'street': fields.String(required=True,
+                                description='street'),
+    'apartment': fields.String(required=True,
+                                description='apartment'),
+    'city': fields.String(required=True,
+                                description='city'),
+    'state': fields.String(required=True,
+                                description='state'),
+    'zip_code': fields.String(required=True,
+                                description='zip_code')
+})
+
+
+######################################################################
+# Authorization Decorator
+######################################################################
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if 'X-Api-Key' in request.headers:
+            token = request.headers['X-Api-Key']
+
+        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
+            return f(*args, **kwargs)
+        else:
+            return {'message': 'Invalid or missing token'}, 401
+    return decorated
+
+
+######################################################################
+# Function to generate a random API key (good for testing)
+######################################################################
+def generate_apikey():
+    """ Helper function used when testing API keys """
+    return uuid.uuid4().hex
+
+
+######################################################################
+# GET HEALTH CHECK
+######################################################################
+@app.route('/healthcheck')
+def healthcheck():
+    """ Let them know our heart is still beating """
+    return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
 
 ######################################################################
 # Error Handlers
@@ -93,12 +207,7 @@ def internal_server_error(error):
                    message=message), status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-######################################################################
-# GET INDEX
-######################################################################
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+
 
 ######################################################################
 # LIST ALL CUSTOMERS
