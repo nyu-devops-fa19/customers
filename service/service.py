@@ -76,25 +76,15 @@ api = Api(app,
 
 # Define the model so that the docs reflect what can be sent
 customer_model = api.model('Customer', {
-    'customer_id': fields.String(readOnly=True,
-                                 description='The unique id assigned internally by service'),
-    'user_id': fields.String(required=True,
-                             description='The unique id given by customer'),
-    'first_name': fields.String(required=True,
+    'fname': fields.String(required=True,
                                 description='The first name of the Customer'),
-    'last_name': fields.String(required=True,
+    'lname': fields.String(required=True,
                                description='The last name of Customer (e.g., Wang, Gates, etc.)'),
-    'password': fields.String(required=True,
-                              description='Password'),
-    'street': fields.String(required=True,
-                            description='street'),
-    'apartment': fields.String(required=True,
-                               description='apartment'),
     'city': fields.String(required=True,
                           description='city'),
     'state': fields.String(required=True,
                            description='state'),
-    'zip_code': fields.String(required=True,
+    'zip': fields.String(required=True,
                               description='zip_code'),
     'status': fields.String(required=False,
                             description='status')
@@ -123,13 +113,12 @@ create_model = api.model('Customer', {
 
 # query string arguments
 customer_args = reqparse.RequestParser()
-customer_args.add_argument('first_name', type=str, required=False, help='List Customers by first name')
-customer_args.add_argument('last_name', type=str, required=False, help='List Customers by last name')
+customer_args.add_argument('fname', type=str, required=False, help='List Customers by first name')
+customer_args.add_argument('lname', type=str, required=False, help='List Customers by last name')
 customer_args.add_argument('street', type=str, required=False, help='List Customers by street')
-customer_args.add_argument('apartment', type=str, required=False, help='List Customers by apartment')
 customer_args.add_argument('city', type=str, required=False, help='List Customers by city')
 customer_args.add_argument('state', type=str, required=False, help='List Customers by state')
-customer_args.add_argument('zip_code', type=str, required=False, help='List Customers by zip code')
+customer_args.add_argument('zip', type=str, required=False, help='List Customers by zip code')
 
 ######################################################################
 # Error Handlers
@@ -218,32 +207,43 @@ def healthcheck():
     return make_response(jsonify(status=200, message='Healthy'), status.HTTP_200_OK)
 
 ######################################################################
-# LIST ALL CUSTOMERS
+# PATH: /customers
 ######################################################################
-@app.route('/customers', methods=['GET'])
-def list_customers():
-    """ Returns all of the Customers """
-    app.logger.info('Request for customers list')
-    customers = Customer.all()
-    f_name = request.args.get('fname')
-    l_name = request.args.get('lname')
-    city = request.args.get('city')
-    state = request.args.get('state')
-    zip_code = request.args.get('zip')
-    if f_name:
-        customers = Customer.find_by_first_name(f_name)
-    elif l_name:
-        customers = Customer.find_by_last_name(l_name)
-    elif city:
-        customers = Address.find_by_city(city)
-    elif state:
-        customers = Address.find_by_state(state)
-    elif zip_code:
-        customers = Address.find_by_zip(zip_code)
-    else:
-        customers = Customer.all()
-    results = [cust.serialize() for cust in customers]
-    return make_response(jsonify(results), status.HTTP_200_OK)
+@api.route('/customers', strict_slashes=False)
+class CustomerCollection(Resource):
+    """ Handles all interactions with collections of Customers """
+    ######################################################################
+    # LIST ALL CUSTOMERS
+    ######################################################################
+    @api.doc('list_customers')
+    @api.expect(customer_args, validate=True)
+    @api.marshal_list_with(customer_model)
+    def get(self):
+        """ Returns all of the Customers """
+        app.logger.info('Request for customers list...')
+        customers = []
+        args = customer_args.parse_args()
+        if args['fname']:
+            app.logger.info('Filtering by first name: %s', args['fname'])
+            customers = Customer.find_by_first_name(args['fname'])
+        elif args['lname']:
+            app.logger.info('Filtering by last name: %s', args['lname'])
+            customers = Customer.find_by_last_name(args['lname'])
+        elif args['city']:
+            app.logger.info('Filtering by city: %s', args['city'])
+            customers = Address.find_by_city(args['city'])
+        elif args['state']:
+            app.logger.info('Filtering by state: %s', args['state'])
+            customers = Address.find_by_state(args['state'])
+        elif args['zip_code']:
+            app.logger.info('Filtering by zip code: %s', args['zip'])
+            customers = Address.find_by_zip(args['zip'])
+        else:
+            customers = Customer.all()
+
+        app.logger.info('[%s] Customers returned', len(customers))
+        results = [cust.serialize() for cust in customers]
+        return results, status.HTTP_200_OK
 
 ######################################################################
 # RETRIEVE A CUSTOMER
