@@ -28,6 +28,7 @@ import os
 import sys
 import uuid
 import logging
+import atexit
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields, reqparse, inputs
@@ -407,3 +408,10 @@ def initialize_logging(log_level=logging.INFO):
         app.logger.setLevel(log_level)
         app.logger.propagate = False
         app.logger.info('Logging handler established')
+
+def disconnect():
+    """ disconnect from the database """
+    app.logger.info('removing session ...')
+    Customer.disconnect()
+
+atexit.register(disconnect)
