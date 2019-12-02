@@ -53,7 +53,6 @@ except Exception as error:
     # gunicorn requires exit code 4 to stop spawning workers when they die
     sys.exit(4)
 
-# service.init_db()
 app.logger.info('Service inititalized!')
 
 # If an API Key was not provided, autogenerate one
