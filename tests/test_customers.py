@@ -376,3 +376,49 @@ class TestCustomers(unittest.TestCase):
             """ Find by zip code """
             cust_zip = Address.find_zip(cust.zip_code)
             self.assertEqual(cust_zip[0].customer_id, cust.customer_id)
+
+    def test_remove_all_customers(self):
+        """ Remove all customers """
+        customer = Customer(first_name="Marry", last_name="Wang", user_id="marrywang", password="password", active = True, address_id=100)
+        customer.save()
+        customer = Customer(first_name="Marry", last_name="Jane", user_id="marryjane", password="password", active = True, address_id=200)
+        customer.save()
+        all_customers = Customer.all()
+        self.assertEquals(len(all_customers), 2)
+        customer.remove_all()
+        all_customers = Customer.all()
+        self.assertEquals(len(all_customers), 0)
+
+    def test_remove_all_addresses(self):
+        """ Remove all addresses """
+        custs = Customer.all()
+        self.assertEqual(custs, [])
+        cust = Customer (
+            first_name="Marry",
+            last_name="Wang",
+            user_id="marrywang",
+            password="password",
+            active = True
+        )
+        self.assertTrue(cust != None)
+        self.assertEqual(cust.customer_id, None)
+        self.assertEqual(cust.address_id, None)
+
+        cust.save()
+
+        addr = Address (
+            street="100 W 100th St.",
+            apartment="100",
+            city="New York",
+            state="New York",
+            zip_code="10035",
+        )
+        addr.customer_id = cust.customer_id
+        addr.save()
+        all_addresses = Address.all()
+        self.assertEquals(len(all_addresses), 1)
+
+        addr.remove_all()
+        all_addresses = Address.all()
+        self.assertEquals(len(all_addresses), 0)
+

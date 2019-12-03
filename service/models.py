@@ -287,7 +287,12 @@ class Customer(db.Model):
             return cls.query.filter(cls.user_id == user_id)
 
     @classmethod
-    def find_or_404(cls, pet_id):
-        """ Find a Pet by it's id """
-        cls.logger.info('Processing lookup or 404 for id %s ...', pet_id)
-        return cls.query.get_or_404(pet_id)
+    def find_or_404(cls, user_id):
+        """ Find a Customer by id """
+        cls.logger.info('Processing lookup or 404 for id %s ...', user_id)
+        return cls.query.get_or_404(user_id)
+
+    @staticmethod
+    def disconnect():
+        db.session.remove()
+

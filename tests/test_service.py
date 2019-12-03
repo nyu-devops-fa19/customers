@@ -27,8 +27,8 @@ import logging
 import uuid
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
-from service.models import Customer, Address, DataValidationError, db
 from tests.customer_factory import CustomerFactory, AddressFactory
+from service.models import Customer, Address, DataValidationError, db
 from service.service import app, init_db, initialize_logging, internal_server_error, generate_apikey
 
 
@@ -48,6 +48,11 @@ class TestCustomerServer(unittest.TestCase):
         app.config['API_KEY'] = api_key
         app.debug = False
         initialize_logging(logging.INFO)
+
+        # Get API key
+        api_key = generate_apikey()
+        app.config['API_KEY'] = api_key
+
         # Set up the test database
         if DATABASE_URI:
             app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
@@ -66,6 +71,9 @@ class TestCustomerServer(unittest.TestCase):
         }
         db.create_all()  # create new tables
         self.app = app.test_client()
+        self.headers = {
+            'X-Api-Key': app.config['API_KEY']
+        }
 
     def tearDown(self):
         db.session.remove()
