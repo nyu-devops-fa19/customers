@@ -32,8 +32,8 @@ from tests.customer_factory import CustomerFactory, AddressFactory
 from service.service import app, init_db, initialize_logging, internal_server_error
 
 
-DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
-# DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
+#DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
+DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
 
 ######################################################################
 #  T E S T   C A S E S

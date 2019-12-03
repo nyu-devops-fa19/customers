@@ -77,6 +77,7 @@ class Address(db.Model):
         if not self.id:
             db.session.add(self)
         db.session.commit()
+        Customer.logger.info('Saved address!')
 
     @classmethod
     def init_db(cls, app):
@@ -124,7 +125,7 @@ class Address(db.Model):
     @classmethod
     def find(cls, addr_id):
         """ Finds an address by its ID """
-        cls.logger.info('Processing lookup for id %s ...', addr_id)
+        cls.logger.info('Processing address lookup for id %s ...', addr_id)
         return cls.query.get(addr_id).serialize()
 
     @classmethod
@@ -227,6 +228,7 @@ class Customer(db.Model):
         if not self.customer_id:
             db.session.add(self)
         db.session.commit()
+        Customer.logger.info('Saved customer!')
 
     @classmethod
     def all(cls):
@@ -278,7 +280,7 @@ class Customer(db.Model):
     @classmethod
     def find(cls, user_id, filter_activate = True):
         """ Finds a Customer by user_id """
-        cls.logger.info('Processing lookup for id %s ...', user_id)
+        cls.logger.info('Processing customer lookup for user id %s ...', user_id)
         if filter_activate:
             return cls.query.filter(cls.user_id == user_id and cls.active)
         else:
