@@ -469,11 +469,13 @@ class TestCustomerServer(unittest.TestCase):
 
     def test_create_customer_415(self):
         """ Test creating a customer with unsupported content type """
+        reqHeaders = self.headers
+        reqHeaders['content-type'] = 'text/plain'
         resp = self.app.post('/customers', data={
             'first_name': 'cust_first_name',
             'last_name': 'cust_last_name',
             'customer_id': 100,
-        }, headers={'content-type': 'text/plain'})
+        }, headers=reqHeaders)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_rename_customer_invalid_content_type(self):

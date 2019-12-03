@@ -133,10 +133,16 @@ customer_args.add_argument('zip_code', type=str, required=False, help='List Cust
 ######################################################################
 # Error Handlers
 ######################################################################
-@app.errorhandler(DataValidationError)
+@api.errorhandler(DataValidationError)
 def request_validation_error(error):
     """ Handles Value Errors from bad data """
-    return bad_request(error)
+    message = str(error)
+    app.logger.warning(message)
+    return {
+        'status_code': status.HTTP_400_BAD_REQUEST,
+        'error': 'Bad Request',
+        'message': message
+    }, status.HTTP_400_BAD_REQUEST
 
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
@@ -165,14 +171,13 @@ def method_not_supported(error):
                    error='Method not Allowed',
                    message=message), status.HTTP_405_METHOD_NOT_ALLOWED
 
-@app.errorhandler(status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-def mediatype_not_supported(error):
-    """ Handles unsuppoted media requests with 415_UNSUPPORTED_MEDIA_TYPE """
-    message = str(error)
-    app.logger.warning(message)
-    return jsonify(status=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-                   error='Unsupported media type',
-                   message=message), status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+def check_content_type(content_type):
+    """ Checks that the media type is correct """
+    if request.headers['Content-Type'] == content_type:
+        return
+    app.logger.error('Invalid Content-Type: %s',
+                     request.headers['Content-Type'])
+    abort(415, 'Content-Type must be {}'.format(content_type))
 
 @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
@@ -238,10 +243,8 @@ class CustomerCollection(Resource):
         This endpoint will create a Customer based the data in the body that is posted
         """
         app.logger.info('Request to create a customer')
-        # data = request.get_json()
+        check_content_type('application/json')
         cust = Customer()
-        app.logger.info('Payload = %s', api.payload)
-        app.logger.info('Payload address = %s', api.payload['address'])
         cust.deserialize(api.payload)
         cust.save()
         customer_id = cust.customer_id
@@ -252,9 +255,6 @@ class CustomerCollection(Resource):
         cust.address_id = addr.id
         cust.save()
         message = cust.serialize()
-        app.logger.info("Active status = %s", message['active'])
-        print("In service.py")
-        print(message)
         location_url = api.url_for(CustomerResource, user_id=cust.user_id, _external=True)
         return message, status.HTTP_201_CREATED, {'Location': location_url}
     #-----------------------------------------------------------------------
