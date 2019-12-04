@@ -318,7 +318,6 @@ class CustomerResource(Resource):
             cust.delete()
         return '', status.HTTP_204_NO_CONTENT
 
-
 ######################################################################
 # PATH: /customers/{user_id}/deactivate
 ######################################################################

@@ -73,7 +73,7 @@ Choices of param:
   * lname - last name (String)  
   * city - city of primary address (String)  
   * state - state of primary address (String)  
-  * zip - zip code of primary address (String)  
+  * zip_code - zip code of primary address (String)  
 
 #### **Deactivate**
 - **PUT** `/customers/{user_id}/deactivate`
