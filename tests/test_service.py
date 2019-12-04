@@ -27,9 +27,9 @@ import logging
 import uuid
 from flask_api import status    # HTTP Status Codes
 from unittest.mock import MagicMock, patch
-from service.models import Customer, Address, DataValidationError, db
 from tests.customer_factory import CustomerFactory, AddressFactory
-from service.service import app, init_db, initialize_logging, internal_server_error
+from service.models import Customer, Address, DataValidationError, db
+from service.service import app, init_db, initialize_logging, internal_server_error, generate_apikey
 
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
@@ -46,6 +46,11 @@ class TestCustomerServer(unittest.TestCase):
         """ Run once before all tests """
         app.debug = False
         initialize_logging(logging.INFO)
+
+        # Get API key
+        api_key = generate_apikey()
+        app.config['API_KEY'] = api_key
+
         # Set up the test database
         if DATABASE_URI:
             app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
@@ -61,6 +66,9 @@ class TestCustomerServer(unittest.TestCase):
         """ Runs before each test """
         db.create_all()  # create new tables
         self.app = app.test_client()
+        self.headers = {
+            'X-Api-Key': app.config['API_KEY']
+        }
 
     def tearDown(self):
         db.session.remove()

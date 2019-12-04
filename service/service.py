@@ -28,6 +28,7 @@ import os
 import sys
 import uuid
 import logging
+import atexit
 from flask import Flask, jsonify, request, url_for, make_response, abort
 from flask_api import status    # HTTP Status Codes
 from flask_restplus import Api, Resource, fields, reqparse, inputs
@@ -172,23 +173,6 @@ def internal_server_error(error):
     return jsonify(status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                    error='Internal Server Error',
                    message=message), status.HTTP_500_INTERNAL_SERVER_ERROR
-
-######################################################################
-# Authorization Decorator
-######################################################################
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        if 'X-Api-Key' in request.headers:
-            token = request.headers['X-Api-Key']
-
-        if app.config.get('API_KEY') and app.config['API_KEY'] == token:
-            return f(*args, **kwargs)
-        else:
-            return {'message': 'Invalid or missing token'}, 401
-    return decorated
-
 
 ######################################################################
 # Function to generate a random API key (good for testing)
@@ -424,3 +408,10 @@ def initialize_logging(log_level=logging.INFO):
         app.logger.setLevel(log_level)
         app.logger.propagate = False
         app.logger.info('Logging handler established')
+
+def disconnect():
+    """ disconnect from the database """
+    app.logger.info('removing session ...')
+    Customer.disconnect()
+
+atexit.register(disconnect)
