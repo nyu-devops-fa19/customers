@@ -159,7 +159,7 @@ class TestCustomerServer(unittest.TestCase):
     def test_update_customer(self):
         """ Update an existing Customer """
         # create a customer to update
-        customers = self._create_customers(1)
+        customers = self._create_customers(5)
         test_customer = customers[0]
         test_customer.first_name = 'Cow'
         cust_json = test_customer.internal_serialize()
@@ -167,6 +167,7 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.put('/customers/{}'.format(test_customer.user_id),
                             json=cust_json,
                             content_type='application/json')
+        print(resp.get_json())
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_customer = resp.get_json()
         self.assertEqual(updated_customer['first_name'], 'Cow')
