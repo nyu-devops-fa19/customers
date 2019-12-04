@@ -277,43 +277,76 @@ def create_customers():
 
 
 ######################################################################
-# DELETE A CUSTOMER
+# PATH: /customers/{user_id}
 ######################################################################
-@app.route('/customers/<string:user_id>', methods=['DELETE'])
-def delete_customers(user_id):
-
+@api.route('/customers/<user_id>/')
+class DeleteResource(Resource):
+    @api.doc('delete_customers', security='apikey')
+    def delete(self, user_id):
     """
     Delete a Customer
     This endpoint will delete a Customer based the id specified in the path
     """
-    app.logger.info('Request to delete customer with user_id: %s', user_id)
-    customer = Customer.find(user_id)
-    if customer:
-        cust = customer[0]
-        cust.delete()
-    return make_response('', status.HTTP_204_NO_CONTENT)
+        app.logger.info('Request to delete customer with user_id: %s', user_id)
+        customer = Customer.find(user_id)
+        if customer:
+            cust = customer[0]
+            cust.delete()
+        return make_response('', status.HTTP_204_NO_CONTENT)
+# @app.route('/customers/<string:user_id>', methods=['DELETE'])
+# def delete_customers(user_id):
+
+#     """
+#     Delete a Customer
+#     This endpoint will delete a Customer based the id specified in the path
+#     """
+#     app.logger.info('Request to delete customer with user_id: %s', user_id)
+#     customer = Customer.find(user_id)
+#     if customer:
+#         cust = customer[0]
+#         cust.delete()
+#     return make_response('', status.HTTP_204_NO_CONTENT)
+
 
 ######################################################################
-# UPDATE A CUSTOMER
+# PATH: /customers/{user_id}
 ######################################################################
-@app.route('/customers/<string:user_id>', methods=['PUT'])
-def update_customers(user_id):
-    """
-    Update a Customer
-    This endpoint will update a Customer based the body that is posted
-    """
-    app.logger.info('Request to update customer with id: %s', user_id)
-    check_content_type('application/json')
-    customers = Customer.find(user_id)
-    if customers.count() == 0:
-        raise NotFound("Customer with id '{}' was not found.".format(user_id))
+# @app.route('/customers/<string:user_id>', methods=['PUT'])
+# def update_customers(user_id):
+#     """
+#     Update a Customer
+#     This endpoint will update a Customer based the body that is posted
+#     """
+#     app.logger.info('Request to update customer with id: %s', user_id)
+#     check_content_type('application/json')
+#     customers = Customer.find(user_id)
+#     if customers.count() == 0:
+#         raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
-    cust = customers[0]
-    cust.deserialize(request.get_json())
-    cust.user_id = user_id
-    cust.save()
-    return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+#     cust = customers[0]
+#     cust.deserialize(request.get_json())
+#     cust.user_id = user_id
+#     cust.save()
+#     return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
+@api.route('/customers/<user_id>/')
+class UpdateResource(Resource):
+    @api.doc('delete_customers', security='apikey')
+    def put(self, user_id):
+        """
+        Update a Customer
+        This endpoint will update a Customer based the body that is posted
+        """
+        app.logger.info('Request to update customer with id: %s', user_id)
+        check_content_type('application/json')
+        customers = Customer.find(user_id)
+        if customers.count() == 0:
+            raise NotFound("Customer with id '{}' was not found.".format(user_id))
 
+        cust = customers[0]
+        cust.deserialize(request.get_json())
+        cust.user_id = user_id
+        cust.save()
+        return make_response(jsonify(cust.serialize()), status.HTTP_200_OK)
 ######################################################################
 # PATH: /customers/{user_id}/deactivate
 ######################################################################
