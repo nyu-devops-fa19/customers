@@ -46,6 +46,14 @@ app.logger.info(70 * '*')
 app.logger.info('  C U S T O M E R   S E R V I C E   R U N N I N G  '.center(70, '*'))
 app.logger.info(70 * '*')
 
+# Set up logging for production
+app.logger.propagate = False
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    if gunicorn_logger:
+        app.logger.handlers = gunicorn_logger.handlers
+        app.logger.setLevel(gunicorn_logger.level)
+
 try:
     service.init_db()  # make our sqlalchemy tables
 except Exception as error:

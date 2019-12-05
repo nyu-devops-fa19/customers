@@ -33,7 +33,7 @@ from service.service import app, init_db, initialize_logging, internal_server_er
 
 
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
-# DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
+#DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
 
 ######################################################################
 #  T E S T   C A S E S
@@ -44,6 +44,8 @@ class TestCustomerServer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ Run once before all tests """
+        api_key = generate_apikey()
+        app.config['API_KEY'] = api_key
         app.debug = False
         initialize_logging(logging.INFO)
 
@@ -64,6 +66,9 @@ class TestCustomerServer(unittest.TestCase):
 
     def setUp(self):
         """ Runs before each test """
+        self.headers = {
+            'X-Api-Key': app.config['API_KEY']
+        }
         db.create_all()  # create new tables
         self.app = app.test_client()
         self.headers = {
@@ -85,10 +90,11 @@ class TestCustomerServer(unittest.TestCase):
             cust_json["address"] = addr_json
             resp = self.app.post('/customers',
                                  json=cust_json,
-                                 content_type='application/json')
+                                 content_type='application/json',
+                                 headers=self.headers)
             self.assertEqual(resp.status_code, status.HTTP_201_CREATED, 'Could not create test customer')
             new_cust = resp.get_json()
-            test_customer.id = new_cust["customer_id"]
+            test_customer.customer_id = new_cust["customer_id"]
             addr = new_cust["address"]
             test_customer.address_id = addr["id"]
             customers.append(test_customer)
@@ -108,7 +114,7 @@ class TestCustomerServer(unittest.TestCase):
             }
         }
         """ Test wrong request when creating a customer - missing user_id """
-        resp = self.app.post('/customers', json=body, content_type='application/json')
+        resp = self.app.post('/customers', json=body, content_type='application/json', headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_cust_not_found_404(self):
@@ -135,7 +141,8 @@ class TestCustomerServer(unittest.TestCase):
         }
         resp = self.app.post('/customers',
                              json=body,
-                             content_type='application/json')
+                             content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         # Make sure location header is set
         location = resp.headers.get('Location', None)
@@ -159,7 +166,7 @@ class TestCustomerServer(unittest.TestCase):
     def test_update_customer(self):
         """ Update an existing Customer """
         # create a customer to update
-        customers = self._create_customers(1)
+        customers = self._create_customers(5)
         test_customer = customers[0]
         test_customer.first_name = 'Cow'
         cust_json = test_customer.internal_serialize()
@@ -167,6 +174,7 @@ class TestCustomerServer(unittest.TestCase):
         resp = self.app.put('/customers/{}'.format(test_customer.user_id),
                             json=cust_json,
                             content_type='application/json')
+        print(resp.get_json())
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_customer = resp.get_json()
         self.assertEqual(updated_customer['first_name'], 'Cow')
@@ -227,7 +235,8 @@ class TestCustomerServer(unittest.TestCase):
         }
         resp_create = self.app.post('/customers',
                              json=body,
-                             content_type='application/json')
+                             content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
         self.assertEqual(resp_create.get_json()['active'], True)
 
@@ -323,7 +332,7 @@ class TestCustomerServer(unittest.TestCase):
         test_zip = Address.find(customers[0].address_id)['zip_code']
         zip_customers = [cust for cust in customers if Address.find(cust.address_id)['zip_code'] == test_zip]
         resp = self.app.get('/customers',
-                            query_string='zip={}'.format(test_zip))
+                            query_string='zip_code={}'.format(test_zip))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(zip_customers))
@@ -349,14 +358,16 @@ class TestCustomerServer(unittest.TestCase):
         }
         resp_create = self.app.post('/customers',
                              json=body,
-                             content_type='application/json')
+                             content_type='application/json',
+                             headers=self.headers)
         self.assertEqual(resp_create.status_code, status.HTTP_201_CREATED)
         self.assertEqual(resp_create.get_json()['active'], True)
 
         # deactivate the customer
         resp_deactivate = self.app.put('/customers/gstacy/deactivate',
                              json=body,
-                            content_type='application/json')
+                            content_type='application/json',
+                            headers=self.headers)
         self.assertEqual(resp_deactivate.status_code, status.HTTP_200_OK)
         self.assertEqual(resp_deactivate.get_json()['active'], False)
 
@@ -467,15 +478,17 @@ class TestCustomerServer(unittest.TestCase):
 
     def test_create_customer_415(self):
         """ Test creating a customer with unsupported content type """
+        reqHeaders = self.headers
+        reqHeaders['content-type'] = 'text/plain'
         resp = self.app.post('/customers', data={
             'first_name': 'cust_first_name',
             'last_name': 'cust_last_name',
             'customer_id': 100,
-        }, headers={'content-type': 'text/plain'})
+        }, headers=reqHeaders)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_rename_customer_invalid_content_type(self):
-        """ Test renaming a wishlist with invalid content type """
+        """ Test renaming a customer with invalid content type """
         customer = Customer(first_name="Marry", last_name="Wang", user_id="newname", password="password", active = True, address_id=100)
         customer.save()
         resp = self.app.put('/customers/%s' % customer.user_id, json={
