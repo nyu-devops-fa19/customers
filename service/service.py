@@ -119,41 +119,6 @@ def request_validation_error(error):
         'message': message
     }, status.HTTP_400_BAD_REQUEST
 
-@app.errorhandler(status.HTTP_400_BAD_REQUEST)
-def bad_request(error):
-    """ Handles bad reuests with 400_BAD_REQUEST """
-    message = str(error)
-    app.logger.warning(message)
-    return jsonify(status=status.HTTP_400_BAD_REQUEST,
-                   error='Bad Request',
-                   message=message), status.HTTP_400_BAD_REQUEST
-
-@app.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """ Handles resources not found with 404_NOT_FOUND """
-    message = str(error)
-    app.logger.warning(message)
-    return jsonify(status=status.HTTP_404_NOT_FOUND,
-                   error='Not Found',
-                   message=message), status.HTTP_404_NOT_FOUND
-
-@app.errorhandler(status.HTTP_405_METHOD_NOT_ALLOWED)
-def method_not_supported(error):
-    """ Handles unsuppoted HTTP methods with 405_METHOD_NOT_SUPPORTED """
-    message = str(error)
-    app.logger.warning(message)
-    return jsonify(status=status.HTTP_405_METHOD_NOT_ALLOWED,
-                   error='Method not Allowed',
-                   message=message), status.HTTP_405_METHOD_NOT_ALLOWED
-
-def check_content_type(content_type):
-    """ Checks that the media type is correct """
-    if request.headers['Content-Type'] == content_type:
-        return
-    app.logger.error('Invalid Content-Type: %s',
-                     request.headers['Content-Type'])
-    abort(415, 'Content-Type must be {}'.format(content_type))
-
 @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """ Handles unexpected server error with 500_SERVER_ERROR """
