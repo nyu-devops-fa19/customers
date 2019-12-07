@@ -25,8 +25,8 @@ from flask import Flask
 
 # Get configuration from environment
 # DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
-DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
-SECRET_KEY = os.getenv('SECRET_KEY', 'aafb0461-29be-4699-bac2-d1017ae79cf9')
+DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://jpklhqur:Zm9vW9NAoSSrcVtIbZm8NisKnUxJG-a4@rajje.db.elephantsql.com:5432/jpklhqur')
+SECRET_KEY = os.getenv('SECRET_KEY', 'bb6c7bcc-4184-42fe-91f1-a4f491781d84')
 
 # Create Flask application
 app = Flask(__name__)
