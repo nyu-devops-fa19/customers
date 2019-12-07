@@ -258,7 +258,7 @@ class CustomerResource(Resource):
         check_content_type('application/json')
         customers = Customer.find(user_id)
         if customers.count() == 0:
-            raise NotFound("Customer with id '{}' was not found.".format(user_id))
+            api.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(user_id))
 
         cust = customers[0]
         cust.deserialize(request.get_json())
@@ -299,7 +299,7 @@ class DeactivateResource(Resource):
         app.logger.info('Request to deactivate customer with id: %s', user_id)
         customers = Customer.find(user_id)
         if customers.count() == 0:
-            raise NotFound("Customer with id '{}' was not found.".format(user_id))
+            api.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(user_id))
 
         cust = customers[0]
         cust.user_id = user_id
@@ -323,7 +323,7 @@ class ActivateResource(Resource):
         app.logger.info('Request to activate customer with id: %s', user_id)
         customers = Customer.find(user_id)
         if customers.count() == 0:
-            raise NotFound("Customer with id '{}' was not found.".format(user_id))
+            api.abort(status.HTTP_404_NOT_FOUND, "Customer with id '{}' was not found".format(user_id))
 
         cust = customers[0]
         cust.user_id = user_id
