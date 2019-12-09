@@ -28,6 +28,11 @@ from flask import Flask
 DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://jpklhqur:Zm9vW9NAoSSrcVtIbZm8NisKnUxJG-a4@rajje.db.elephantsql.com:5432/jpklhqur')
 SECRET_KEY = os.getenv('SECRET_KEY', 'bb6c7bcc-4184-42fe-91f1-a4f491781d84')
 
+if 'VCAP_SERVICES' in os.environ:
+    print('Getting database from VCAP_SERVICES')
+    vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+    DATABASE_URI = vcap_services['user-provided'][0]['credentials']['database_uri']
+
 # Create Flask application
 app = Flask(__name__)
 
