@@ -84,3 +84,9 @@ Choices of param:
 ## Running the tests
 Run the tests using `nose`  
 `nosetests`
+
+## Dev
+
+## Prod
+
+## Pipeline
