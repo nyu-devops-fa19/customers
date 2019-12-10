@@ -6,6 +6,11 @@
 ## Description
 customer squads of a e-commerce website
 
+## Service, pipeline URLs
+- Prod: https://nyu-customer-service-f19.mybluemix.net/
+- Dev: https://nyu-customer-service-f19-dev.mybluemix.net/
+- Pipeline: https://cloud.ibm.com/devops/pipelines/a53e9506-a90e-46c8-b92c-42a4ca964834?env_id=ibm:yp:us-south
+
 ## PostgreSQL(from ElephantSQL.com)
 Name: `yazjsysy`  
 Password: `vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab`  
@@ -84,9 +89,3 @@ Choices of param:
 ## Running the tests
 Run the tests using `nose`  
 `nosetests`
-
-## Dev
-
-## Prod
-
-## Pipeline
