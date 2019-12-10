@@ -22,6 +22,7 @@ import os
 import sys
 import logging
 from flask import Flask
+import json
 
 # Get configuration from environment
 # DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
