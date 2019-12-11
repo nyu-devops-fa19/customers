@@ -243,11 +243,11 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Customer
+    // Search a Customer
     // ****************************************
 
     $("#search-btn").click(function () {
-        console.log("retrieve-btn.click")
+        console.log("search-btn.click")
         var user_id = $("#user_id").val();
         var ajax = $.ajax({
             type: "GET",
@@ -257,7 +257,7 @@ $(function () {
         })
 
         ajax.done(function(res){
-            console.log("retrieve-btn.click: res")
+            console.log("search-btn.click: res")
             console.log(res)
             update_form_data(res[0])
             flash_message("Success")
@@ -305,15 +305,16 @@ $(function () {
     });
 
     // ****************************************
-    // Search for a Customer
+    // List/Query Customers
     // ****************************************
 
     $("#retrieve-btn").click(function () {
+        console.log("retrieve-btn.click")
         var fname = $("#first_name").val();
         var lname = $("#last_name").val();
         var city = $("#city").val();
         var state = $("#state").val();
-        var zip = $("#zip_code").val();
+        var zip_code = $("#zip_code").val();
 
         var queryString = ""
 
@@ -342,11 +343,11 @@ $(function () {
                 queryString += 'state=' + state
             }
         }
-        if (zip) {
+        if (zip_code) {
             if (queryString.length > 0) {
-                queryString += '&zip=' + zip
+                queryString += '&zip_code=' + zip_code
             } else {
-                queryString += 'zip=' + zip
+                queryString += 'zip_code=' + zip_code
             }
         }
 
@@ -356,6 +357,8 @@ $(function () {
             contentType: "application/json",
             data: ''
         })
+
+        console.log(ajax.url)
 
         ajax.done(function(res){
             //alert(res.toSource())

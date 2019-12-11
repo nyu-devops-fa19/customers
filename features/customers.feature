@@ -16,55 +16,57 @@ Scenario: The server is running
     Then I should see "Customer RESTful Service" in the title
     And I should not see "404 Not Found"
 
-# Scenario: List all customers
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I press the "Retrieve" button
-#     Then I should see "fname1" in the results
-#     And I should see "fname2" in the results
-#     And I should see "fname3" in the results
+Scenario: List all customers
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I press the "Retrieve" button
+    Then I should see "fname1" in the results
+    And I should see "fname2" in the results
+    And I should see "fname3" in the results
+    And I should see "fname4" in the results
+    And I should not see "fname5" in the results
 
-# Scenario: List all customers with first name fname1
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I set the "first_name" to "fname1"
-#     And I press the "Retrieve" button
-#     Then I should see "fname1" in the results
-#     And I should not see "fname4" in the results
+Scenario: List all customers with first name fname1
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "first_name" to "fname1"
+    And I press the "Retrieve" button
+    Then I should see "fname1" in the results
+    And I should not see "fname4" in the results
 
-# Scenario: List all customers with last name lname1
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I set the "last_name" to "lname1"
-#     And I press the "Retrieve" button
-#     Then I should see "lname1" in the results
-#     And I should not see "lname4" in the results
+Scenario: List all customers with last name lname1
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "last_name" to "lname1"
+    And I press the "Retrieve" button
+    Then I should see "lname1" in the results
+    And I should not see "lname4" in the results
 
-# Scenario: List all customers living in cty3
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I set the "City" to "cty3"
-#     And I press the "Retrieve" button
-#     Then I should see "fname3" in the results
-#     And I should see "fname4" in the results
-#     And I should not see "fname1" in the results
+Scenario: List all customers living in cty3
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "City" to "cty3"
+    And I press the "Retrieve" button
+    Then I should see "fname3" in the results
+    And I should see "fname4" in the results
+    And I should not see "fname1" in the results
 
-# Scenario: List all customers living in state st3
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I set the "State" to "st3"
-#     And I press the "Retrieve" button
-#     Then I should see "fname3" in the results
-#     And I should see "fname4" in the results
-#     And I should not see "fname2" in the results
+Scenario: List all customers living in state st3
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "State" to "st3"
+    And I press the "Retrieve" button
+    Then I should see "fname3" in the results
+    And I should see "fname4" in the results
+    And I should not see "fname2" in the results
 
-# Scenario: List all customers with zip code code2
-#     When I visit the "Home Page"
-#     And I press the "Clear" button
-#     And I set the "zip_code" to "code2"
-#     And I press the "Retrieve" button
-#     Then I should see "fname2" in the results
-#     And I should not see "fname3" in the results
+Scenario: List all customers with zip code code2
+    When I visit the "Home Page"
+    And I press the "Clear" button
+    And I set the "zip_code" to "code2"
+    And I press the "Retrieve" button
+    Then I should see "fname2" in the results
+    And I should not see "fname4" in the results
 
 Scenario: Deactivate a Customer
     When I visit the "Home Page"
