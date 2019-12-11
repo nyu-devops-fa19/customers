@@ -10,6 +10,7 @@ customer squads of a e-commerce website
 - Prod: https://nyu-customer-service-f19.mybluemix.net/
 - Dev: https://nyu-customer-service-f19-dev.mybluemix.net/
 - Pipeline: https://cloud.ibm.com/devops/pipelines/a53e9506-a90e-46c8-b92c-42a4ca964834?env_id=ibm:yp:us-south
+- API Doc: https://nyu-customer-service-f19.mybluemix.net/apidocs
 
 ## PostgreSQL(from ElephantSQL.com)
 - URL (dev): `postgres://ramcqzam:F-i4xNnzQIwhXAef134Bfus0oBI5bl-m@rajje.db.elephantsql.com:5432/ramcqzam`
