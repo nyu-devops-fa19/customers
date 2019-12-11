@@ -27,8 +27,8 @@ honcho start
 Then on your own machine, you can see by visiting: http://localhost:5000/
 
 ## Running the tests
-- Unit tests (after `cd /vagrant/`): `nosetests`
-- Integration tests (after `cd /vagrant/` and `honcho start`): `behave`
+- Unit tests: `cd /vagrant/` -> `nosetests`
+- Integration tests: `cd /vagrant/` -> `honcho start` -> `behave`
 
 ## APIs routes
 #### **Create** 
