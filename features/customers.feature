@@ -94,12 +94,12 @@ Scenario: Update a Customer
     And I paste the "user_id" field
     And I press the "Search" button
     Then I should see "fchanged_name" in the "first_name" field
-    When I copy the "first_name" field
-    And I press the "Clear" button
-    And I paste the "first_name" field
-    And I press the "Retrieve" button
-    Then I should see "fchanged_name" in the results
-    Then I should not see "fname1" in the results
+    # When I copy the "first_name" field
+    # And I press the "Clear" button
+    # And I paste the "first_name" field
+    # And I press the "Retrieve" button
+    # Then I should see "fchanged_name" in the results
+    # Then I should not see "fname1" in the results
 
 
 Scenario: Delete a Customer

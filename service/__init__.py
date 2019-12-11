@@ -22,11 +22,17 @@ import os
 import sys
 import logging
 from flask import Flask
+import json
 
 # Get configuration from environment
 # DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://postgres:postgres@localhost:5432/postgres')
-DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy')
-SECRET_KEY = os.getenv('SECRET_KEY', 'aafb0461-29be-4699-bac2-d1017ae79cf9')
+DATABASE_URI = os.getenv('DATABASE_URI', 'postgres://ramcqzam:F-i4xNnzQIwhXAef134Bfus0oBI5bl-m@rajje.db.elephantsql.com:5432/ramcqzam')
+SECRET_KEY = os.getenv('SECRET_KEY', '57ef659d-8383-41df-ba5c-6de1d982585f')
+
+if 'VCAP_SERVICES' in os.environ:
+    print('Getting database from VCAP_SERVICES')
+    vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+    DATABASE_URI = vcap_services['user-provided'][0]['credentials']['database_uri']
 
 # Create Flask application
 app = Flask(__name__)

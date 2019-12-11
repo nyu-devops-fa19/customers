@@ -80,16 +80,6 @@ class Address(db.Model):
         Customer.logger.info('Saved address!')
 
     @classmethod
-    def init_db(cls, app):
-        """ Initializes the database sesssion """
-        cls.logger.info('Initializing database')
-        cls.app = app
-        # This is where we initialize SQLAlchemy from the Flask app
-        db.init_app(app)
-        app.app_context().push()
-        db.create_all()  # make our sqlalchemy tabless
-
-    @classmethod
     def find_by_city(cls, city):
         """ Returns all addresses in the given city
 

@@ -44,7 +44,7 @@ api = Api(app,
           description='This is Customer server.',
           default='customers',
           default_label='Customer operations',
-          doc='/apidocs/',
+          doc='/apidocs',
 
           authorizations=authorizations
          )

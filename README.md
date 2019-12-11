@@ -6,13 +6,17 @@
 ## Description
 customer squads of a e-commerce website
 
-## PostgreSQL(from ElephantSQL.com)
-Name: `yazjsysy`  
-Password: `vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab`  
-URL: `postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy`  
-API Key: `aafb0461-29be-4699-bac2-d1017ae79cf9`
+## Service, pipeline URLs
+- Prod: https://nyu-customer-service-f19.mybluemix.net/
+- Dev: https://nyu-customer-service-f19-dev.mybluemix.net/
+- Pipeline: https://cloud.ibm.com/devops/pipelines/a53e9506-a90e-46c8-b92c-42a4ca964834?env_id=ibm:yp:us-south
+- API Doc: https://nyu-customer-service-f19.mybluemix.net/apidocs
 
-## To run the Flask app 
+## PostgreSQL(from ElephantSQL.com)
+- URL (dev): `postgres://ramcqzam:F-i4xNnzQIwhXAef134Bfus0oBI5bl-m@rajje.db.elephantsql.com:5432/ramcqzam`
+- URL (prod): `postgres://grtjewnq:Bq2G7mAUIIU3c07CMbXZg2l0n6xLRLAp@rajje.db.elephantsql.com:5432/grtjewnq`
+
+## To run the Flask app locally
 
 ```
 vagrant up
@@ -21,6 +25,10 @@ cd /vagrant/
 honcho start
 ```
 Then on your own machine, you can see by visiting: http://localhost:5000/
+
+## Running the tests
+- Unit tests: `cd /vagrant/` -> `nosetests`
+- Integration tests: `cd /vagrant/` -> `honcho start` -> `behave`
 
 ## APIs routes
 #### **Create** 
@@ -80,7 +88,3 @@ Choices of param:
 
 #### **Activate**
 - **PUT** `/customers/{user_id}/activate`
-
-## Running the tests
-Run the tests using `nose`  
-`nosetests`
