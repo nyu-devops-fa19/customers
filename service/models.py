@@ -126,7 +126,10 @@ class Address(db.Model):
     def find(cls, addr_id):
         """ Finds an address by its ID """
         cls.logger.info('Processing address lookup for id %s ...', addr_id)
-        return cls.query.get(addr_id).serialize()
+        this_address = cls.query.get(addr_id)
+        if(this_address):
+            print(this_address)
+        return this_address.serialize()
 
     @classmethod
     def all(cls):

@@ -98,12 +98,11 @@ create_model = api.model('Customer', {
 
 # query string
 customer_args = reqparse.RequestParser()
-customer_args.add_argument('fname', type=str, required=False, help='List Customers by first name')
-customer_args.add_argument('lname', type=str, required=False, help='List Customers by last name')
-customer_args.add_argument('street', type=str, required=False, help='List Customers by street')
-customer_args.add_argument('city', type=str, required=False, help='List Customers by city')
-customer_args.add_argument('state', type=str, required=False, help='List Customers by state')
-customer_args.add_argument('zip_code', type=str, required=False, help='List Customers by zip code')
+customer_args.add_argument('fname', type=str, required=False, location='args', help='List Customers by first name')
+customer_args.add_argument('lname', type=str, required=False, location='args', help='List Customers by last name')
+customer_args.add_argument('city', type=str, required=False, location='args', help='List Customers by city')
+customer_args.add_argument('state', type=str, required=False, location='args', help='List Customers by state')
+customer_args.add_argument('zip_code', type=str, required=False, location='args', help='List Customers by zip code')
 
 ######################################################################
 # Error Handlers
@@ -189,6 +188,7 @@ class CustomerCollection(Resource):
         app.logger.info('Request for customers list...')
         customers = []
         args = customer_args.parse_args()
+
         if args['fname']:
             app.logger.info('Filtering by first name: %s', args['fname'])
             customers = Customer.find_by_first_name(args['fname'])
@@ -205,6 +205,7 @@ class CustomerCollection(Resource):
             app.logger.info('Filtering by zip code: %s', args['zip_code'])
             customers = Address.find_by_zip(args['zip_code'])
         else:
+            app.logger.info('Getting all customers')
             customers = Customer.all()
 
         results = [cust.serialize() for cust in customers]

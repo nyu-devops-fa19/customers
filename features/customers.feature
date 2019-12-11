@@ -23,6 +23,8 @@ Scenario: List all customers
     Then I should see "fname1" in the results
     And I should see "fname2" in the results
     And I should see "fname3" in the results
+    And I should see "fname4" in the results
+    And I should not see "fname5" in the results
 
 Scenario: List all customers with first name fname1
     When I visit the "Home Page"
@@ -64,7 +66,7 @@ Scenario: List all customers with zip code code2
     And I set the "zip_code" to "code2"
     And I press the "Retrieve" button
     Then I should see "fname2" in the results
-    And I should not see "fname3" in the results
+    And I should not see "fname4" in the results
 
 Scenario: Deactivate a Customer
     When I visit the "Home Page"
