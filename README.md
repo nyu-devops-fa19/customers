@@ -12,10 +12,8 @@ customer squads of a e-commerce website
 - Pipeline: https://cloud.ibm.com/devops/pipelines/a53e9506-a90e-46c8-b92c-42a4ca964834?env_id=ibm:yp:us-south
 
 ## PostgreSQL(from ElephantSQL.com)
-Name: `yazjsysy`  
-Password: `vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab`  
-URL: `postgres://yazjsysy:vuMLNAWJTu1VlMof3Z-c2KU1W_jp8dab@salt.db.elephantsql.com:5432/yazjsysy`  
-API Key: `aafb0461-29be-4699-bac2-d1017ae79cf9`
+-- URL (dev): `postgres://ramcqzam:F-i4xNnzQIwhXAef134Bfus0oBI5bl-m@rajje.db.elephantsql.com:5432/ramcqzam`
+-- URL (prod): `postgres://grtjewnq:Bq2G7mAUIIU3c07CMbXZg2l0n6xLRLAp@rajje.db.elephantsql.com:5432/grtjewnq`
 
 ## To run the Flask app 
 
