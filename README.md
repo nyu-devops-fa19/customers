@@ -16,7 +16,7 @@ customer squads of a e-commerce website
 - URL (dev): `postgres://ramcqzam:F-i4xNnzQIwhXAef134Bfus0oBI5bl-m@rajje.db.elephantsql.com:5432/ramcqzam`
 - URL (prod): `postgres://grtjewnq:Bq2G7mAUIIU3c07CMbXZg2l0n6xLRLAp@rajje.db.elephantsql.com:5432/grtjewnq`
 
-## To run the Flask app 
+## To run the Flask app locally
 
 ```
 vagrant up
@@ -25,6 +25,10 @@ cd /vagrant/
 honcho start
 ```
 Then on your own machine, you can see by visiting: http://localhost:5000/
+
+## Running the tests
+- Unit tests (after `cd /vagrant/`): `nosetests`
+- Integration tests (after `cd /vagrant/` and `honcho start`): `behave`
 
 ## APIs routes
 #### **Create** 
@@ -84,7 +88,3 @@ Choices of param:
 
 #### **Activate**
 - **PUT** `/customers/{user_id}/activate`
-
-## Running the tests
-Run the tests using `nose`  
-`nosetests`
