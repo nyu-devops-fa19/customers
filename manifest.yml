@@ -1,5 +1,5 @@
 ---
-# This manifest deploys a Python Flask application
+# This manifest deploys a Python Flask application with a Postgres database
 applications:
 - name: nyu-customer-service-f19-dev
   path: .
@@ -28,7 +28,7 @@ applications:
   timeout: 180
   command: null
   services:
-  - ElephantSQL
+  - ElephantSQLProd
   env:
     FLASK_APP : service:app
     FLASK_DEBUG : false
