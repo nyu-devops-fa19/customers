@@ -1,19 +1,34 @@
 ---
-# This manifest deploys a Python Flask application with a Redis database
+# This manifest deploys a Python Flask application
 applications:
-  - name: nyu-customer-service-f19
-    path: .
-    instances: 1
-    memory: 64M
-    #random-route: true
-    routes:
-      - route: nyu-customer-service-f19.mybluemix.net
-    disk_quota: 1024M
-    buildpack: python_buildpack
-    timeout: 180
-    command: null
-    services:
-      - ElephantSQL
-    env:
-      FLASK_APP: service:app
-      FLASK_DEBUG: false
+- name: nyu-customer-service-f19-dev
+  path: .
+  instances: 1
+  memory: 64M
+  routes:
+  - route: nyu-customer-service-f19-dev.mybluemix.net
+  disk_quota: 1024M
+  buildpack: python_buildpack
+  timeout: 180
+  command: null
+  services:
+  - ElephantSQL
+  env:
+    FLASK_APP : service:app
+    FLASK_DEBUG : false
+
+- name: nyu-customer-service-f19
+  path: .
+  instances: 1
+  memory: 64M
+  routes:
+  - route: nyu-customer-service-f19.mybluemix.net
+  disk_quota: 1024M
+  buildpack: python_buildpack
+  timeout: 180
+  command: null
+  services:
+  - ElephantSQL
+  env:
+    FLASK_APP : service:app
+    FLASK_DEBUG : false
