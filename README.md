@@ -4,7 +4,7 @@
 # Customers
 
 ## Description
-customer squads of a e-commerce website
+Customers squad of an e-commerce website
 
 ## Service, pipeline URLs
 - Prod: https://nyu-customer-service-f19.mybluemix.net/
